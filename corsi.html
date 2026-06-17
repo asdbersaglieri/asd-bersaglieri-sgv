@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corsi &#8212; ASD Bersaglieri SGV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#E0C982; --crema2:#D7BC6F;
+    --amaranto:#6E1023; --amaranto-deep:#4E121A;
+    --oro:#C2974A; --oro-bright:#E0BE6E;
+    --ink:#241410; --ink-soft:rgba(36,20,16,.74);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--crema);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+  img{display:block;max-width:100%}
+  .wrap{width:100%;max-width:1140px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+
+  /* NAV */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(224,201,130,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(110,16,35,.14)}
+  .nav__in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 24px;max-width:1140px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .brand img{height:48px;width:auto}
+  .brand b{font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--amaranto);line-height:1}
+  .brand span{display:block;font-size:10px;letter-spacing:.34em;color:var(--oro);font-weight:600;margin-top:3px}
+  .menu{display:flex;align-items:center;gap:26px;list-style:none}
+  .menu a{text-decoration:none;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:.01em;transition:color .2s}
+  .menu a:hover{color:var(--amaranto)}
+  .btn{display:inline-flex;align-items:center;gap:.5em;font-family:'Cinzel',serif;font-weight:600;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;font-size:13px;padding:11px 24px;border-radius:2px;border:1.5px solid var(--oro);cursor:pointer;transition:all .3s}
+  .btn--gold{background:var(--oro);color:#2a1a07}
+  .btn--gold:hover{background:var(--amaranto);color:var(--crema);border-color:var(--oro)}
+  .btn--ghost{background:transparent;color:var(--amaranto)}
+  .btn--ghost:hover{background:var(--amaranto);color:var(--crema)}
+  .navtoggle,.navtoggle-lbl{display:none}
+
+  /* SECTION */
+  section{padding:62px 0}
+  .sec-head{text-align:center;max-width:60ch;margin:0 auto 38px}
+  .sec-head h2{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(26px,4.4vw,40px);color:var(--amaranto);margin-bottom:12px}
+  .sec-head p{color:var(--ink-soft);font-size:clamp(15px,2.2vw,17px)}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:#fff;border:1px solid rgba(110,16,35,.12);border-radius:10px;padding:28px 24px;transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(78,18,26,.14)}
+  .card .num{font-family:'Cinzel',serif;font-size:15px;color:var(--oro);font-weight:600;letter-spacing:.1em}
+  .card h3{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:var(--amaranto);margin:8px 0 10px;line-height:1.2}
+  .card p{font-size:14.5px;color:var(--ink-soft)}
+  .card .who{margin-top:14px;font-size:13px;color:var(--ink);background:#FBF6E6;border:1px solid rgba(110,16,35,.16);border-radius:8px;padding:9px 12px}
+  .card .who b{color:var(--amaranto)}
+  .card .det{list-style:none;margin-top:14px;border-top:1px solid rgba(110,16,35,.10);padding-top:14px}
+  .card .det li{font-size:13px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:12px;padding:4px 0}
+  .card .det li span:first-child{color:var(--amaranto);font-weight:600}
+  .card .det li .ph{color:#9a6a12;font-style:italic}
+
+  /* CTA BAND */
+  .band{background:linear-gradient(135deg,var(--amaranto) 0%,var(--amaranto-deep) 100%);color:var(--crema);text-align:center;padding:58px 0}
+  .band h2{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(24px,4vw,36px);margin-bottom:10px}
+  .band p{color:rgba(247,244,227,.82);margin-bottom:26px;max-width:48ch;margin-inline:auto}
+
+  /* FOOTER */
+  footer{background:var(--amaranto-deep);color:rgba(247,244,227,.86);padding:46px 0 26px}
+  .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+  .foot b.logo{font-family:'Cinzel',serif;font-size:20px;color:var(--oro-bright);letter-spacing:.05em;display:block;margin-bottom:10px}
+  .foot h4{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.08em;color:var(--oro);margin-bottom:12px;text-transform:uppercase}
+  .foot a,.foot p{font-size:13.5px;color:rgba(247,244,227,.8);text-decoration:none;display:block;margin-bottom:7px}
+  .foot a:hover{color:var(--oro-bright)}
+  .ph-note{font-size:11px;color:rgba(247,244,227,.45);font-style:italic}
+  .copy{border-top:1px solid rgba(247,244,227,.16);margin-top:30px;padding-top:18px;font-size:12px;color:rgba(247,244,227,.55);text-align:center}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* PAGE HERO + NOTE */
+  .phero{background:linear-gradient(135deg,var(--amaranto) 0%,var(--amaranto-deep) 100%);color:var(--crema);text-align:center;padding:54px 0 48px}
+  .phero .eyebrow{color:var(--oro-bright)}
+  .phero h1{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(30px,5.4vw,50px);line-height:1.04}
+  .phero p{color:rgba(247,244,227,.86);max-width:56ch;margin:14px auto 0;font-size:clamp(15px,2.2vw,17px)}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:var(--oro);margin-bottom:14px}
+  .note{background:#FBF6E6;border:1px dashed var(--amaranto);border-radius:8px;padding:14px 18px;font-size:13.5px;color:var(--ink-soft);margin:0 auto 34px;max-width:840px;text-align:center}
+  .note b{color:var(--amaranto)}
+  .note a{color:var(--amaranto);font-weight:600;text-decoration:underline}
+
+  /* COME ISCRIVERSI */
+  .steps{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .step{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft)}
+  .step b{width:30px;height:30px;border-radius:50%;background:var(--amaranto);color:var(--crema);font-family:'Cinzel',serif;display:flex;align-items:center;justify-content:center;font-size:14px}
+
+  @media (max-width:860px){
+    .menu{position:absolute;top:67px;left:0;right:0;flex-direction:column;gap:0;background:var(--crema);border-bottom:1px solid rgba(110,16,35,.14);max-height:0;overflow:hidden;transition:max-height .3s ease}
+    .menu li{width:100%;border-top:1px solid rgba(110,16,35,.08)}
+    .menu li a{display:block;padding:14px 24px}
+    .menu li.cta-li{padding:14px 24px}
+    .navtoggle:checked ~ .menu{max-height:420px}
+    .navtoggle-lbl{display:block;cursor:pointer;width:30px;height:22px;position:relative}
+    .navtoggle-lbl span,.navtoggle-lbl span::before,.navtoggle-lbl span::after{content:"";position:absolute;left:0;width:30px;height:2.5px;background:var(--amaranto);border-radius:2px;transition:.3s}
+    .navtoggle-lbl span{top:10px}.navtoggle-lbl span::before{top:-8px}.navtoggle-lbl span::after{top:8px}
+    .cards{grid-template-columns:1fr;gap:16px}
+    .foot{grid-template-columns:1fr;gap:24px}
+  }
+  .eyebrow{color:#8F5E12}
+  .phero .eyebrow{color:var(--oro-bright)}
+  .btn--gold{background:linear-gradient(180deg,#E8CC80,#C2974A);color:#3A2407;border-color:#A87F30;box-shadow:0 4px 14px rgba(110,72,8,.30)}
+  .btn--gold:hover,.btn--gold:focus-visible{background:var(--amaranto);color:var(--crema);border-color:var(--oro);box-shadow:0 8px 22px rgba(110,16,35,.4)}
+</style></head>
+<body>
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="home.html">
+      <img src="assets/logo.png" alt="Stemma ASD Bersaglieri SGV">
+      <span><b>ASD BERSAGLIERI</b>SGV</span>
+    </a>
+    <input type="checkbox" id="nt" class="navtoggle">
+    <label for="nt" class="navtoggle-lbl"><span></span></label>
+    <ul class="menu">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="home.html#discipline">Discipline</a></li>
+      <li><a href="corsi.html" style="color:var(--amaranto)">Corsi</a></li>
+      <li><a href="eventi.html">Eventi</a></li>
+      <li><a href="galleria.html">Galleria</a></li>
+      <li><a href="#contatti">Contatti</a></li>
+      <li class="cta-li"><a class="btn btn--gold" href="iscrizioni.html">Iscriviti</a></li>
+    </ul>
+  </div>
+</header>
+<main id="top">
+
+  <section class="phero">
+    <div class="wrap">
+      <p class="eyebrow">Formazione</p>
+      <h1>I nostri corsi</h1>
+      <p>Percorsi pratici nello spirito dei Bersaglieri: precisione, lettura del terreno e capacit&#224; di cavarsela. I primi corsi in partenza, aperti a chi vuole mettersi alla prova.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="note reveal">
+        Calendario, sedi, quote e requisiti dei corsi sono <b>in via di definizione</b>. Per informazioni o per segnalare il tuo interesse scrivi a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a> o compila il modulo di <a href="iscrizioni.html">iscrizione</a>.
+      </div>
+
+      <div class="sec-head reveal">
+        <h2>I primi corsi</h2>
+        <p>Tre discipline per cominciare. Ogni corso &#232; guidato da istruttori e si svolge in condizioni di sicurezza.</p>
+      </div>
+
+      <div class="cards">
+
+        <div class="card reveal">
+          <span class="num">01</span>
+          <h3>Tiro al bersaglio sportivo</h3>
+          <p>La disciplina della precisione. Si lavora su postura, controllo della respirazione, concentrazione e gestione dell&#8217;emozione, tiro dopo tiro. Un percorso che insegna la calma e l&#8217;attenzione prima ancora della mira.</p>
+          <div class="who"><b>A chi &#232; rivolto:</b> principianti e appassionati che vogliono avvicinarsi al tiro sportivo in modo serio e sicuro.</div>
+          <ul class="det">
+            <li><span>Durata</span><span class="ph">[da definire]</span></li>
+            <li><span>Sede</span><span class="ph">[da definire]</span></li>
+            <li><span>Et&#224; minima</span><span class="ph">[da definire]</span></li>
+            <li><span>Requisiti</span><span class="ph">[da definire]</span></li>
+          </ul>
+        </div>
+
+        <div class="card reveal">
+          <span class="num">02</span>
+          <h3>Orientamento</h3>
+          <p>Muoversi sul terreno senza perdere la rotta. Lettura della carta e della bussola, interpretazione del paesaggio, scelta del percorso e gestione del tempo. Un&#8217;attivit&#224; all&#8217;aperto che unisce testa e gambe.</p>
+          <div class="who"><b>A chi &#232; rivolto:</b> tutti, dai ragazzi agli adulti. Adatto anche a chi parte da zero.</div>
+          <ul class="det">
+            <li><span>Durata</span><span class="ph">[da definire]</span></li>
+            <li><span>Sede</span><span class="ph">[da definire]</span></li>
+            <li><span>Et&#224; minima</span><span class="ph">[da definire]</span></li>
+            <li><span>Requisiti</span><span class="ph">[da definire]</span></li>
+          </ul>
+        </div>
+
+        <div class="card reveal">
+          <span class="num">03</span>
+          <h3>Sopravvivenza</h3>
+          <p>Le competenze di base per cavarsela all&#8217;aperto: gestione dell&#8217;acqua e del fuoco, costruzione di un riparo, nodi, nozioni essenziali di primo soccorso e mentalit&#224; giusta. Tutto in ambiente controllato e con la guida degli istruttori.</p>
+          <div class="who"><b>A chi &#232; rivolto:</b> adulti e ragazzi accompagnati, curiosi di imparare ad affrontare l&#8217;ambiente naturale.</div>
+          <ul class="det">
+            <li><span>Durata</span><span class="ph">[da definire]</span></li>
+            <li><span>Sede</span><span class="ph">[da definire]</span></li>
+            <li><span>Et&#224; minima</span><span class="ph">[da definire]</span></li>
+            <li><span>Requisiti</span><span class="ph">[da definire]</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap reveal">
+      <h2>Vuoi partecipare?</h2>
+      <p>Segnala il tuo interesse: ti contatteremo con date, sede e modalit&#224; di partecipazione appena disponibili.</p>
+      <a class="btn btn--gold" href="iscrizioni.html">Manifesta interesse</a>
+    </div>
+  </section>
+
+</main>
+<footer id="contatti">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <b class="logo">ASD Bersaglieri SGV</b>
+        <p>Associazione Sportiva Dilettantistica<br>senza fini di lucro.</p>
+        <p>Sede legale: Largo Vetrai 1, 52027 San Giovanni Valdarno (AR)</p>
+        <p>Codice Fiscale: 90043230516</p>
+        <p>Affiliata CSI &#8212; codice 05000759 (a.s. 2025/26)</p>
+      </div>
+      <div>
+        <h4>Sezioni</h4>
+        <a href="home.html#discipline">Discipline</a>
+        <a href="corsi.html">Corsi</a>
+        <a href="eventi.html">Eventi</a>
+        <a href="galleria.html">Galleria</a>
+        <a href="iscrizioni.html">Iscrizioni</a>
+      </div>
+      <div>
+        <h4>Contatti</h4>
+        <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>
+        <p class="ph-note">[Canali social da inserire]</p>
+        <p style="font-size:12px;color:rgba(247,244,227,.6);margin-top:10px">Titolare del trattamento dati: ASD Bersaglieri SGV (Reg. UE 2016/679).</p>
+      </div>
+    </div>
+    <div class="copy">&#169; 2026 ASD Bersaglieri SGV &#8212; Tutti i diritti riservati. &#183; <a href="privacy.html" style="color:rgba(247,244,227,.72);text-decoration:underline">Informativa privacy</a></div>
+  </div>
+</footer>
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'))}
+  else{document.querySelectorAll('.reveal').forEach(el=>io.observe(el))}
+  document.querySelectorAll('.menu a').forEach(a=>a.addEventListener('click',()=>{const c=document.getElementById('nt');if(c)c.checked=false}));
+</script>
+
+</body></html>
