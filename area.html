@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Area riservata — ASD Bersaglieri SGV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--crema:#E0C982;--amaranto:#6E1023;--amaranto-deep:#4E121A;--oro:#C2974A;--ink:#241410;--ink-soft:rgba(36,20,16,.7)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--crema);color:var(--ink);-webkit-font-smoothing:antialiased}
+  header{background:linear-gradient(135deg,var(--amaranto),var(--amaranto-deep));color:#F7F4E3;padding:20px 24px;display:flex;align-items:center;gap:14px}
+  header img{height:42px}
+  header h1{font-family:'Cinzel',serif;font-size:20px;font-weight:700;letter-spacing:.02em}
+  header span{font-size:12px;color:var(--oro);letter-spacing:.18em;text-transform:uppercase;display:block;margin-top:2px}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  .bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px}
+  .bar input[type=search]{flex:1;min-width:220px;padding:11px 14px;border:1px solid rgba(110,16,35,.3);border-radius:8px;font-size:14px;background:#fff}
+  .count{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;letter-spacing:.02em;border:1.5px solid var(--oro);background:var(--oro);color:#3a2407;padding:10px 18px;border-radius:7px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{background:var(--amaranto);color:#F7F4E3;border-color:var(--oro)}
+  .btn.ghost{background:transparent;color:var(--amaranto)}
+  .btn.ghost:hover{background:var(--amaranto);color:#F7F4E3}
+  .tablewrap{background:#fff;border:1px solid rgba(110,16,35,.16);border-radius:12px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+  th,td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(110,16,35,.1);vertical-align:top}
+  th{background:var(--amaranto);color:#F7F4E3;font-family:'Cinzel',serif;font-weight:600;font-size:12px;position:sticky;top:0;white-space:nowrap}
+  tr:hover td{background:#FBF6E6}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#EFE8D2;color:var(--amaranto)}
+  .tag.min{background:#F6D9DE;color:#8E1B2E}
+  .del{border:none;background:none;color:#B81E33;cursor:pointer;font-size:16px;padding:4px 8px;border-radius:6px}
+  .del:hover{background:#F6D9DE}
+  .state{padding:40px;text-align:center;color:var(--ink-soft)}
+  @media(max-width:600px){.wrap{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+  <img src="assets/logo.png" alt="">
+  <div><h1>Area riservata</h1><span>Iscrizioni</span></div>
+</header>
+<div class="wrap">
+  <div class="bar">
+    <input type="search" id="q" placeholder="Cerca per nome, email, comune…">
+    <span class="count" id="count"></span>
+    <button class="btn ghost" id="refresh">&#8635; Aggiorna</button>
+    <button class="btn" id="csv">&#8615; Scarica CSV</button>
+  </div>
+  <div class="tablewrap">
+    <table id="tbl">
+      <thead><tr>
+        <th>Data</th><th>Nome</th><th>Cognome</th><th>Email</th><th>Cellulare</th>
+        <th>Comune</th><th>Nascita</th><th>Cod. fiscale</th><th>Attività</th>
+        <th>Minore</th><th>Genitore/Tutore</th><th></th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="12" class="state">Caricamento…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+<script>
+let DATA=[];
+const $=id=>document.getElementById(id);
+function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function fmtDate(iso){if(!iso)return '';const d=new Date(iso);if(isNaN(d))return esc(iso);return d.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function render(list){
+  const tb=$('rows');
+  if(!list.length){tb.innerHTML='<tr><td colspan="12" class="state">Nessuna iscrizione.</td></tr>';$('count').textContent='0 iscrizioni';return;}
+  tb.innerHTML=list.map(r=>`<tr>
+    <td>${fmtDate(r.created_at)}</td><td>${esc(r.nome)}</td><td>${esc(r.cognome)}</td>
+    <td>${esc(r.email)}</td><td>${esc(r.cellulare)}</td><td>${esc(r.comune)}</td>
+    <td>${esc(r.luogo_nascita)} ${esc(r.data_nascita)}</td><td>${esc(r.codice_fiscale)}</td>
+    <td>${esc(r.attivita)}</td>
+    <td>${r.minorenne==='Sì'?'<span class="tag min">Sì</span>':'<span class="tag">No</span>'}</td>
+    <td>${esc(r.genitore)}${r.cf_genitore?'<br><small>'+esc(r.cf_genitore)+'</small>':''}</td>
+    <td><button class="del" title="Elimina" data-id="${r.id}">&#128465;</button></td>
+  </tr>`).join('');
+  $('count').textContent=list.length+(list.length===1?' iscrizione':' iscrizioni');
+  tb.querySelectorAll('.del').forEach(b=>b.addEventListener('click',()=>del(b.dataset.id)));
+}
+function filter(){
+  const q=$('q').value.toLowerCase().trim();
+  render(!q?DATA:DATA.filter(r=>JSON.stringify(r).toLowerCase().includes(q)));
+}
+async function load(){
+  $('rows').innerHTML='<tr><td colspan="12" class="state">Caricamento…</td></tr>';
+  try{
+    const res=await fetch('/api/admin/list',{headers:{'Accept':'application/json'}});
+    const data=await res.json();
+    DATA=data.items||[];
+    filter();
+  }catch(e){$('rows').innerHTML='<tr><td colspan="12" class="state">Errore nel caricamento.</td></tr>';}
+}
+async function del(id){
+  if(!confirm('Eliminare questa iscrizione? L\'azione è definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id)})});
+    const d=await res.json();
+    if(d.success){DATA=DATA.filter(r=>String(r.id)!==String(id));filter();}
+    else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+function toCSV(){
+  const cols=['created_at','nome','cognome','email','cellulare','comune','luogo_nascita','data_nascita','codice_fiscale','nazionalita','indirizzo','cap','attivita','minorenne','genitore','cf_genitore','consenso_genitore','consenso_privacy'];
+  const head=cols.join(';');
+  const lines=DATA.map(r=>cols.map(c=>'"'+String(r[c]==null?'':r[c]).replace(/"/g,'""')+'"').join(';'));
+  const csv='\ufeff'+[head,...lines].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='iscrizioni-asd-bersaglieri.csv';a.click();
+}
+$('q').addEventListener('input',filter);
+$('refresh').addEventListener('click',load);
+$('csv').addEventListener('click',toCSV);
+load();
+</script>
+</body>
+</html>

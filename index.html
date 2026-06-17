@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASD Bersaglieri SGV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cremisi:#8E1B2E;
+    --cremisi-bright:#B81E33;
+    --oro:#C9A24B;
+    --oro-bright:#E6C879;
+    --inchiostro:#16110D;
+    --crema:#F4ECDD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--inchiostro);
+    color:var(--crema);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  .soglia{
+    position:relative;
+    height:100svh;
+    min-height:520px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+    text-align:center;
+    isolation:isolate;
+  }
+  .soglia__bg{
+    position:absolute;
+    inset:0;
+    background:url("assets/hero.jpg") center 38% / cover no-repeat;
+    z-index:-2;
+    transform:scale(1.04);
+    animation:bgsettle 1.6s cubic-bezier(.16,.84,.3,1) both;
+  }
+  .soglia__scrim{
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(115% 80% at 50% 30%, transparent 40%, rgba(22,17,13,.30) 100%),
+      linear-gradient(to bottom, rgba(22,17,13,0) 38%, rgba(22,17,13,.62) 66%, rgba(22,17,13,.93) 100%);
+  }
+  .content{
+    width:100%;
+    max-width:760px;
+    padding:0 28px clamp(40px,8vh,90px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:clamp(11px,2.4vw,13px);
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--oro);
+    padding-left:.42em;
+    opacity:0;
+    animation:rise .7s ease-out .15s forwards;
+  }
+  .titolo{
+    font-family:'Cinzel',serif;
+    font-weight:700;
+    font-size:clamp(42px,11vw,82px);
+    line-height:.98;
+    letter-spacing:.01em;
+    color:#fff;
+    text-shadow:0 2px 24px rgba(0,0,0,.55);
+    opacity:0;
+    animation:rise .8s ease-out .30s forwards;
+  }
+  .titolo em{
+    font-style:normal;
+    color:var(--oro-bright);
+  }
+  .sfregio{
+    width:clamp(150px,40vw,230px);
+    height:18px;
+    opacity:0;
+    animation:fade .6s ease-out .55s forwards;
+  }
+  .sfregio path{
+    fill:none;
+    stroke-width:7;
+    stroke-linecap:round;
+    stroke-dasharray:240;
+    stroke-dashoffset:240;
+    animation:draw 1s cubic-bezier(.2,.7,.3,1) .6s forwards;
+  }
+  .sfregio .s-verde{stroke:#1F9355}
+  .sfregio .s-bianco{stroke:#F4ECDD;animation-delay:.72s}
+  .sfregio .s-rosso{stroke:var(--cremisi-bright);animation-delay:.84s}
+  .claim{
+    font-family:'Inter',sans-serif;
+    font-weight:400;
+    font-size:clamp(15px,3.4vw,19px);
+    line-height:1.5;
+    max-width:30ch;
+    color:rgba(244,236,221,.92);
+    text-shadow:0 1px 12px rgba(0,0,0,.6);
+    opacity:0;
+    animation:rise .8s ease-out .72s forwards;
+  }
+  .entra{
+    margin-top:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:.7em;
+    font-family:'Cinzel',serif;
+    font-weight:600;
+    font-size:clamp(15px,3.4vw,18px);
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--inchiostro);
+    background:var(--oro);
+    padding:16px 40px 16px 46px;
+    border:1.5px solid var(--oro-bright);
+    border-radius:2px;
+    cursor:pointer;
+    transition:background .35s ease,color .35s ease,transform .35s ease,box-shadow .35s ease;
+    box-shadow:0 6px 28px rgba(0,0,0,.4);
+    opacity:0;
+    animation:rise .8s ease-out .92s forwards;
+  }
+  .entra .freccia{
+    display:inline-block;
+    transition:transform .35s ease;
+  }
+  .entra:hover,.entra:focus-visible{
+    background:var(--cremisi);
+    color:var(--crema);
+    border-color:var(--oro);
+    transform:translateY(-2px);
+    box-shadow:0 10px 34px rgba(142,27,46,.5);
+  }
+  .entra:hover .freccia,.entra:focus-visible .freccia{transform:translateX(5px)}
+  .entra:focus-visible{outline:3px solid var(--oro-bright);outline-offset:3px}
+
+  @keyframes bgsettle{from{transform:scale(1.12)}to{transform:scale(1.04)}}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fade{to{opacity:1}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  @media (prefers-reduced-motion:reduce){
+    .soglia__bg,.eyebrow,.titolo,.sfregio,.sfregio path,.claim,.entra{animation:none;opacity:1;transform:none;stroke-dashoffset:0}
+  }
+</style>
+</head>
+<body>
+  <main class="soglia">
+    <div class="soglia__bg" role="img" aria-label="Stemma dorato dell'ASD Bersaglieri SGV su sfondo tricolore"></div>
+    <div class="soglia__scrim"></div>
+    <div class="content">
+      <h1 class="titolo">Benvenuti</h1>
+      <svg class="sfregio" viewBox="0 0 240 18" aria-hidden="true">
+        <path class="s-verde"  d="M6 11 C 50 4, 90 14, 118 9"/>
+        <path class="s-bianco" d="M60 10 C 100 3, 140 13, 178 8"/>
+        <path class="s-rosso"  d="M120 11 C 160 4, 200 14, 234 9"/>
+      </svg>
+      <p class="claim">Disciplina, spirito di corpo e comunit&#224;. Lo sport nel segno dei Bersaglieri.</p>
+      <a class="entra" href="home.html">Entra <span class="freccia" aria-hidden="true">&#8594;</span></a>
+    </div>
+  </main>
+</body>
+</html>
