@@ -176,6 +176,7 @@
     <ul class="menu">
       <li><a href="home.html">Home</a></li>
       <li><a href="home.html#discipline">Discipline</a></li>
+      <li><a href="corsi.html">Corsi</a></li>
       <li><a href="eventi.html">Eventi</a></li>
       <li><a href="galleria.html">Galleria</a></li>
       <li><a href="#contatti">Contatti</a></li>
@@ -186,28 +187,39 @@
 <main>
 <section class="phero"><div class="wrap"><p class="eyebrow">Unisciti a noi</p><h1>Iscrizioni</h1><p>Diventare socio dell&#8217;ASD Bersaglieri SGV &#232; semplice e aperto a tutti.</p></div></section>
 <section><div class="wrap">
-<div class="steps reveal"><div class="step"><b>1</b> Compila i tuoi dati</div><div class="step"><b>2</b> Ricevi conferma</div><div class="step future"><b>3</b> <a href="pagamento.html" style="color:inherit;text-decoration:underline">Paga la quota online</a>&nbsp;(in arrivo)</div></div>
+<div class="steps reveal"><div class="step"><b>1</b> Compila e invia i dati</div><div class="step"><b>2</b> Ti ricontattiamo</div><div class="step future"><b>3</b> <a href="pagamento.html" style="color:inherit;text-decoration:underline">Paga la quota online</a>&nbsp;(in arrivo)</div></div>
 <p style="text-align:center;margin:-14px 0 30px"><a class="btn btn--ghost" href="pagamento.html">Come funzioner&#224; il pagamento &#8594;</a></p>
-<div class="note reveal"><b>Modulo in anteprima.</b> L&#8217;invio dei dati e il pagamento della quota online saranno attivi nella prossima fase. Per ora iscriviti scrivendoci a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>. Il certificato medico sportivo va consegnato a parte.</div>
+<div class="note reveal">Compila e invia il modulo: l&#8217;iscrizione arriva via email all&#8217;associazione, che ti ricontatter&#224;. Il certificato medico sportivo va consegnato a parte.</div>
 <form class="formwrap reveal" id="iscform" novalidate>
-<div class="field"><label>Nome</label><input type="text" placeholder="Nome"></div>
-<div class="field"><label>Cognome</label><input type="text" placeholder="Cognome"></div>
-<div class="field"><label>Luogo di nascita</label><input type="text" placeholder="Citt&#224; di nascita"></div>
-<div class="field"><label>Data di nascita</label><input type="date"></div>
-<div class="field"><label>Codice fiscale</label><input type="text" placeholder="Codice fiscale"></div>
-<div class="field"><label>Nazionalit&#224;</label><input type="text" placeholder="Nazionalit&#224;"></div>
-<div class="field full"><label>Indirizzo (via/piazza e n&#176; civico)</label><input type="text" placeholder="Indirizzo"></div>
-<div class="field"><label>CAP</label><input type="text" placeholder="CAP"></div>
-<div class="field"><label>Comune di residenza</label><input type="text" placeholder="Comune"></div>
-<div class="field"><label>Cellulare</label><input type="tel" placeholder="Cellulare"></div>
-<div class="field"><label>Email</label><input type="email" placeholder="nome@email.it"></div>
+<input type="hidden" name="subject" value="Nuova iscrizione &#8212; ASD Bersaglieri SGV">
+<input type="hidden" name="from_name" value="Sito ASD Bersaglieri SGV">
+<input type="checkbox" name="botcheck" id="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+<div class="field"><label>Nome</label><input type="text" name="Nome" placeholder="Nome"></div>
+<div class="field"><label>Cognome</label><input type="text" name="Cognome" placeholder="Cognome"></div>
+<div class="field"><label>Luogo di nascita</label><input type="text" name="Luogo di nascita" placeholder="Citt&#224; di nascita"></div>
+<div class="field"><label>Data di nascita</label><input type="date" name="Data di nascita"></div>
+<div class="field"><label>Codice fiscale</label><input type="text" name="Codice fiscale" placeholder="Codice fiscale"></div>
+<div class="field"><label>Nazionalit&#224;</label><input type="text" name="Nazionalita" placeholder="Nazionalit&#224;"></div>
+<div class="field full"><label>Indirizzo (via/piazza e n&#176; civico)</label><input type="text" name="Indirizzo" placeholder="Indirizzo"></div>
+<div class="field"><label>CAP</label><input type="text" name="CAP" placeholder="CAP"></div>
+<div class="field"><label>Comune di residenza</label><input type="text" name="Comune di residenza" placeholder="Comune"></div>
+<div class="field"><label>Cellulare</label><input type="tel" name="Cellulare" placeholder="Cellulare"></div>
+<div class="field"><label>Email</label><input type="email" name="email" placeholder="nome@email.it"></div>
+<div class="field full" style="margin-top:2px"><label class="chk" style="display:inline-flex"><input type="checkbox" id="isminor" name="Minorenne" value="S&#236;">Il richiedente &#232; minorenne (under 18)</label></div>
+<div class="full" id="minorbox" style="display:none;background:#FBF6E6;border:1px solid rgba(110,16,35,.16);border-radius:10px;padding:18px 18px 6px">
+<p style="font-size:13px;color:var(--amaranto);font-weight:600;letter-spacing:.02em;margin-bottom:12px">DATI DEL GENITORE / TUTORE &#8212; obbligatori per i minorenni</p>
+<div class="formwrap" style="margin:0">
+<div class="field"><label>Nome e cognome del genitore/tutore</label><input type="text" id="pname" name="Genitore/Tutore" placeholder="Nome e cognome"></div>
+<div class="field"><label>Codice fiscale del genitore/tutore</label><input type="text" name="Codice fiscale genitore" placeholder="Codice fiscale"></div>
+<div class="field full consent"><input type="checkbox" id="pconsent" name="Consenso genitore" value="S&#236;"><label for="pconsent" style="font-weight:400;color:var(--ink-soft)">In qualit&#224; di genitore/tutore, dichiaro di aver letto l&#8217;<a href="privacy.html" target="_blank" style="color:var(--amaranto);text-decoration:underline">Informativa sulla Privacy</a> e presto il consenso al trattamento dei dati del minore.</label></div>
+</div></div>
 <div class="field full"><label>Attivit&#224; sportive di interesse</label>
 <div class="chk">
-<label><input type="checkbox">Corsa</label><label><input type="checkbox">Fitness</label><label><input type="checkbox">Cross Training</label>
-<label><input type="checkbox">Calcetto</label><label><input type="checkbox">Tiro a Bersaglio</label><label><input type="checkbox">Attivit&#224; Outdoor</label>
-<label><input type="checkbox">Atletica</label><label><input type="checkbox">Nuoto</label>
+<label><input type="checkbox" name="Corsa" value="S&#236;">Corsa</label><label><input type="checkbox" name="Fitness" value="S&#236;">Fitness</label><label><input type="checkbox" name="Cross Training" value="S&#236;">Cross Training</label>
+<label><input type="checkbox" name="Calcetto" value="S&#236;">Calcetto</label><label><input type="checkbox" name="Tiro a Bersaglio" value="S&#236;">Tiro a Bersaglio</label><label><input type="checkbox" name="Attivita Outdoor" value="S&#236;">Attivit&#224; Outdoor</label>
+<label><input type="checkbox" name="Atletica" value="S&#236;">Atletica</label><label><input type="checkbox" name="Nuoto" value="S&#236;">Nuoto</label>
 </div></div>
-<div class="field full consent"><input type="checkbox" id="gdpr"><label for="gdpr" style="font-weight:400;color:var(--ink-soft)">Dichiaro di aver letto e compreso l&#8217;<a href="privacy.html" target="_blank" style="color:var(--amaranto);text-decoration:underline">Informativa sulla Privacy</a> e acconsento al trattamento dei miei dati personali ai sensi del Reg. UE 2016/679.</label></div>
+<div class="field full consent"><input type="checkbox" id="gdpr" name="Consenso privacy" value="Accettato"><label for="gdpr" style="font-weight:400;color:var(--ink-soft)">Dichiaro di aver letto e compreso l&#8217;<a href="privacy.html" target="_blank" style="color:var(--amaranto);text-decoration:underline">Informativa sulla Privacy</a> e acconsento al trattamento dei miei dati personali ai sensi del Reg. UE 2016/679.</label></div>
 <div class="full" style="text-align:center;margin-top:6px"><button class="btn btn--gold" type="submit">Invia richiesta</button></div>
 </form>
 <p class="formnote" id="msg"></p>
@@ -225,6 +237,7 @@
       <div>
         <h4>Sezioni</h4>
         <a href="home.html#discipline">Discipline</a>
+        <a href="corsi.html">Corsi</a>
         <a href="eventi.html">Eventi</a>
         <a href="galleria.html">Galleria</a>
         <a href="iscrizioni.html">Iscrizioni</a>
@@ -247,25 +260,52 @@
 </script>
 <script>
 (function(){
+  var ACCESS_KEY='88688de5-fafb-4c14-b53d-b8ad19b4dbed';
   var form=document.getElementById('iscform');
   var m=document.getElementById('msg');
   var gdpr=document.getElementById('gdpr');
-  function box(){return gdpr.closest('.consent');}
+  var isminor=document.getElementById('isminor');
+  var minorbox=document.getElementById('minorbox');
+  var pname=document.getElementById('pname');
+  var pconsent=document.getElementById('pconsent');
+  function cbox(){return gdpr.closest('.consent');}
+  function warn(html,el){
+    m.innerHTML='&#9888; '+html; m.style.color='#B81E33';
+    (el||m).scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  isminor.addEventListener('change',function(){
+    minorbox.style.display=isminor.checked?'block':'none';
+  });
   form.addEventListener('submit',function(e){
     e.preventDefault();
     if(!gdpr.checked){
-      m.innerHTML='&#9888; Per proseguire devi accettare l&#8217;Informativa sulla Privacy.';
-      m.style.color='#B81E33';
-      var b=box(); if(b){b.style.outline='2px solid #B81E33';b.style.outlineOffset='8px';b.style.borderRadius='8px';}
-      (b||m).scrollIntoView({behavior:'smooth',block:'center'});
+      var b=cbox(); if(b){b.style.outline='2px solid #B81E33';b.style.outlineOffset='8px';b.style.borderRadius='8px';}
+      warn('Per proseguire devi accettare l&#8217;Informativa sulla Privacy.', b); return;
+    }
+    if(isminor.checked){
+      if(!pname.value.trim()){ warn('Inserisci il nome del genitore/tutore.', minorbox); pname.focus(); return; }
+      if(!pconsent.checked){ warn('Serve il consenso del genitore/tutore per il minore.', minorbox); return; }
+    }
+    if(ACCESS_KEY.indexOf('__')===0){
+      m.style.color='var(--amaranto)';
+      m.innerHTML='Modulo pronto. L&#8217;invio via email sar&#224; attivo appena configurata la chiave. Per ora scrivici a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>.';
       return;
     }
-    var b=box(); if(b){b.style.outline='none';}
-    m.innerHTML='Grazie! L&#8217;invio online sar&#224; attivo a breve. Per completare l&#8217;iscrizione ora, scrivici a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>.';
-    m.style.color='var(--amaranto)';
+    m.style.color='var(--ink-soft)'; m.textContent='Invio in corso&#8230;';
+    var fd=new FormData(form); fd.append('access_key',ACCESS_KEY);
+    fetch('/api/iscrizione',{method:'POST',body:fd})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d.success){
+          form.reset(); minorbox.style.display='none';
+          m.style.color='var(--amaranto)';
+          m.innerHTML='Iscrizione inviata! Ti ricontatteremo a breve. Grazie.';
+        } else { warn('Invio non riuscito. Riprova o scrivici a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>.'); }
+      })
+      .catch(function(){ warn('Invio non riuscito. Riprova o scrivici a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>.'); });
   });
   gdpr.addEventListener('change',function(){
-    if(gdpr.checked){var b=box(); if(b)b.style.outline='none'; if(m.style.color==='rgb(184, 30, 51)')m.innerHTML='';}
+    if(gdpr.checked){var b=cbox(); if(b)b.style.outline='none'; if(m.style.color==='rgb(184, 30, 51)')m.innerHTML='';}
   });
 })();
 </script>
