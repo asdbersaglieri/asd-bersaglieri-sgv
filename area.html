@@ -77,6 +77,7 @@
 <nav class="tabs">
   <button class="tab on" data-panel="iscrizioni">Iscrizioni</button>
   <button class="tab" data-panel="eventi">Eventi</button>
+  <button class="tab" data-panel="adesioni">Adesioni</button>
 </nav>
 
 <div class="wrap">
@@ -160,6 +161,16 @@
     </div>
   </section>
 
+  <!-- ============ ADESIONI ============ -->
+  <section class="panel" id="panel-adesioni">
+    <div class="bar">
+      <span class="count" id="ad-count"></span>
+      <button class="btn ghost" id="ad-refresh">&#8635; Aggiorna</button>
+      <button class="btn" id="ad-csv">&#8615; Scarica CSV</button>
+    </div>
+    <div id="ad-groups"><div class="state">Caricamento…</div></div>
+  </section>
+
 </div>
 
 <script>
@@ -173,6 +184,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   t.classList.add('on');
   $('panel-'+t.dataset.panel).classList.add('on');
   if(t.dataset.panel==='eventi' && !EV_LOADED){loadEventi();}
+  if(t.dataset.panel==='adesioni' && !AD_LOADED){loadAdesioni();}
 }));
 
 /* ===================== ISCRIZIONI ===================== */
@@ -318,6 +330,62 @@ async function delEvento(id){
 }
 $('e-save').addEventListener('click',saveEvento);
 $('e-refresh').addEventListener('click',loadEventi);
+
+/* ===================== ADESIONI ===================== */
+let AD=[], AD_LOADED=false;
+function fmtDataOra(iso){if(!iso)return '';const d=new Date(iso);if(isNaN(d))return esc(iso);return d.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function renderAdesioni(){
+  const box=$('ad-groups');
+  if(!AD.length){box.innerHTML='<div class="state">Nessuna adesione ricevuta finora.</div>';$('ad-count').textContent='0 adesioni';return;}
+  // Raggruppo per evento (per titolo, così resta leggibile anche se l'evento è stato cancellato)
+  const gruppi={};
+  AD.forEach(a=>{
+    const k=(a.titolo_evento||'(evento senza titolo)');
+    (gruppi[k]=gruppi[k]||[]).push(a);
+  });
+  let html='';
+  Object.keys(gruppi).sort().forEach(titolo=>{
+    const lista=gruppi[titolo];
+    html+=`<div class="formcard" style="padding:0;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#FBF6E6;border-bottom:1px solid rgba(110,16,35,.12)">
+        <b style="font-family:'Cinzel',serif;color:var(--amaranto);font-size:17px">${esc(titolo)}</b>
+        <span class="tag pub" style="font-size:13px">${lista.length} ${lista.length===1?'adesione':'adesioni'}</span>
+      </div>
+      <table style="min-width:auto"><thead><tr><th>Data e ora</th><th>Nome</th><th>Cognome</th><th>Contatto</th></tr></thead><tbody>`;
+    lista.forEach(a=>{
+      const anon=!(a.nome||a.cognome||a.contatto);
+      html+=`<tr>
+        <td>${fmtDataOra(a.created_at)}</td>
+        ${anon?'<td colspan="3" style="color:var(--ink-soft);font-style:italic">Partecipante anonimo</td>'
+              :`<td>${esc(a.nome)}</td><td>${esc(a.cognome)}</td><td>${esc(a.contatto)}</td>`}
+      </tr>`;
+    });
+    html+='</tbody></table></div>';
+  });
+  box.innerHTML=html;
+  $('ad-count').textContent=AD.length+(AD.length===1?' adesione totale':' adesioni totali');
+}
+async function loadAdesioni(){
+  AD_LOADED=true;
+  $('ad-groups').innerHTML='<div class="state">Caricamento…</div>';
+  try{
+    const res=await fetch('/api/admin/adesioni-list',{headers:{'Accept':'application/json'}});
+    const data=await res.json();
+    AD=data.items||[];
+    renderAdesioni();
+  }catch(e){$('ad-groups').innerHTML='<div class="state">Errore nel caricamento.</div>';}
+}
+function adCSV(){
+  const cols=['created_at','titolo_evento','nome','cognome','contatto','consenso'];
+  const head=['Data e ora','Evento','Nome','Cognome','Contatto','Consenso'].join(';');
+  const lines=AD.map(r=>cols.map(c=>'"'+String(r[c]==null?'':r[c]).replace(/"/g,'""')+'"').join(';'));
+  const csv='\ufeff'+[head,...lines].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='adesioni-eventi.csv';a.click();
+}
+$('ad-refresh').addEventListener('click',loadAdesioni);
+$('ad-csv').addEventListener('click',adCSV);
 </script>
 </body>
 </html>

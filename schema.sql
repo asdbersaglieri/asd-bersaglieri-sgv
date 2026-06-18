@@ -23,3 +23,15 @@ CREATE TABLE IF NOT EXISTS eventi (
   pubblicato INTEGER DEFAULT 1,  -- 1 = visibile sul sito, 0 = bozza
   locandina TEXT         -- chiave del file immagine su R2 (opzionale)
 );
+
+-- Tabella adesioni agli eventi (registrata dal sito pubblico)
+CREATE TABLE IF NOT EXISTS adesioni (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT,       -- data e ora dell'adesione
+  evento_id INTEGER,     -- id dell'evento (collega a eventi.id)
+  titolo_evento TEXT,    -- titolo copiato, per comodità
+  nome TEXT,             -- facoltativo
+  cognome TEXT,          -- facoltativo
+  contatto TEXT,         -- facoltativo (telefono o email)
+  consenso TEXT          -- "Accettato" se ha lasciato dati
+);

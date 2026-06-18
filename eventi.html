@@ -120,6 +120,26 @@
   .ev-loc{display:block;margin:4px 0 14px}
   .ev-loc img{max-width:100%;max-height:340px;border-radius:8px;border:1px solid rgba(110,16,35,.16);box-shadow:0 6px 20px rgba(60,12,20,.14);transition:transform .3s}
   .ev-loc:hover img{transform:scale(1.01)}
+  .ev-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .ev-actions .btn{cursor:pointer}
+  /* POPUP adesione */
+  .modal{position:fixed;inset:0;background:rgba(30,12,8,.6);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+  .modal.on{display:flex}
+  .modal__box{background:var(--crema);border-radius:14px;max-width:460px;width:100%;padding:28px 26px;box-shadow:0 24px 70px rgba(0,0,0,.4);max-height:92vh;overflow:auto}
+  .modal__box h3{font-family:'Cinzel',serif;color:var(--amaranto);font-size:22px;margin-bottom:6px}
+  .modal__sub{font-size:14px;color:var(--ink-soft);margin-bottom:18px}
+  .modal__box .field{margin-bottom:14px}
+  .modal__box label{display:block;font-size:13px;font-weight:600;color:var(--amaranto);margin-bottom:5px}
+  .modal__box input[type=text]{width:100%;padding:11px 13px;border:1px solid rgba(110,16,35,.26);border-radius:7px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink)}
+  .modal__box input:focus{outline:2px solid var(--oro-bright);outline-offset:1px;border-color:var(--oro)}
+  .modal__consent{display:none;gap:9px;align-items:flex-start;font-size:13px;color:var(--ink-soft);margin:6px 0 16px}
+  .modal__consent.on{display:flex}
+  .modal__consent input{margin-top:3px}
+  .modal__consent a{color:var(--amaranto);text-decoration:underline}
+  .modal__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .modal__msg{font-size:13px;font-weight:600;margin-top:12px}
+  .modal__msg.err{color:#B81E33}.modal__msg.ok{color:#2c6b34}
+  .modal__x{float:right;font-size:24px;color:var(--amaranto);cursor:pointer;line-height:1;font-family:'Cinzel',serif;margin-top:-4px}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .tile{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:4/3;border:1px solid rgba(110,16,35,.16);cursor:pointer;background:var(--crema2)}
   .tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
@@ -206,6 +226,28 @@
   <div id="ev-vuoto" class="note" style="display:none">Al momento non ci sono eventi in programma. <b>Torna presto</b> per gli aggiornamenti, oppure <a href="iscrizioni.html" style="color:var(--amaranto)">iscriviti</a> per restare in contatto.</div>
 </div></section>
 </main>
+
+<!-- POPUP ADESIONE -->
+<div class="modal" id="adesione-modal" role="dialog" aria-modal="true">
+  <div class="modal__box">
+    <span class="modal__x" id="ad-x" title="Chiudi">&times;</span>
+    <h3>Parteciperai a questo evento?</h3>
+    <p class="modal__sub" id="ad-evento"></p>
+    <p class="modal__sub" style="margin-bottom:16px">Nome e cognome sono <b>facoltativi</b>: puoi confermare la partecipazione anche senza inserirli. Ci aiuta solo a stimare quante persone verranno.</p>
+    <div class="field"><label for="ad-nome">Nome (facoltativo)</label><input type="text" id="ad-nome" maxlength="60"></div>
+    <div class="field"><label for="ad-cognome">Cognome (facoltativo)</label><input type="text" id="ad-cognome" maxlength="60"></div>
+    <div class="field"><label for="ad-contatto">Telefono o email (facoltativo)</label><input type="text" id="ad-contatto" maxlength="100"></div>
+    <label class="modal__consent" id="ad-consent-row">
+      <input type="checkbox" id="ad-consenso">
+      <span>Acconsento al trattamento dei miei dati per la gestione dell'evento (<a href="privacy.html" target="_blank" rel="noopener">informativa</a>).</span>
+    </label>
+    <div class="modal__actions">
+      <button class="btn btn--gold" id="ad-confirm">Confermo la partecipazione</button>
+      <button class="btn btn--ghost" id="ad-cancel">Annulla</button>
+    </div>
+    <div class="modal__msg" id="ad-msg"></div>
+  </div>
+</div>
 <footer id="contatti">
   <div class="wrap">
     <div class="foot">
@@ -265,10 +307,15 @@
       var url="/api/locandina/"+encodeURIComponent(ev.locandina);
       locHtml='<a class="ev-loc" href="'+url+'" target="_blank" rel="noopener"><img src="'+url+'" alt="Locandina '+esc(ev.titolo)+'" loading="lazy"></a>';
     }
+    var oggetto=encodeURIComponent("Info evento: "+(ev.titolo||""));
+    var titoloJs=(ev.titolo||"").replace(/'/g,"\\'").replace(/"/g,'&quot;');
     return '<div class="ev reveal in">'
       + '<div class="date"><span class="d">'+giorno+'</span><span class="m">'+mese+'</span></div>'
       + '<div class="body"><h3>'+esc(ev.titolo)+'</h3>'+metaHtml+locHtml+descHtml
-      + '<a class="btn btn--ghost" href="iscrizioni.html">Partecipa</a></div></div>';
+      + '<div class="ev-actions">'
+      + '<button class="btn btn--gold" onclick="apriAdesione('+(ev.id||0)+",'"+titoloJs+"'"+')">Partecipa</button>'
+      + '<a class="btn btn--ghost" href="mailto:anb.asd.sgv@gmail.com?subject='+oggetto+'">Info</a>'
+      + '</div></div></div>';
   }
   function show(id){var el=document.getElementById(id);if(el)el.style.display="";}
   function hide(id){var el=document.getElementById(id);if(el)el.style.display="none";}
@@ -296,6 +343,70 @@
       v.innerHTML="Non &egrave; stato possibile caricare gli eventi in questo momento. Riprova pi&#249; tardi.";
       show("ev-vuoto");
     });
+})();
+</script>
+<script>
+(function(){
+  var modal=document.getElementById('adesione-modal');
+  var elEvento=document.getElementById('ad-evento');
+  var elNome=document.getElementById('ad-nome');
+  var elCognome=document.getElementById('ad-cognome');
+  var elContatto=document.getElementById('ad-contatto');
+  var elConsenso=document.getElementById('ad-consenso');
+  var rowConsent=document.getElementById('ad-consent-row');
+  var elMsg=document.getElementById('ad-msg');
+  var btnConfirm=document.getElementById('ad-confirm');
+  var current={id:0,titolo:''};
+
+  function reset(){
+    elNome.value='';elCognome.value='';elContatto.value='';elConsenso.checked=false;
+    elMsg.textContent='';elMsg.className='modal__msg';
+    rowConsent.classList.remove('on');
+    btnConfirm.disabled=false;btnConfirm.textContent='Confermo la partecipazione';
+  }
+  function aggiornaConsenso(){
+    var haDati=!!(elNome.value.trim()||elCognome.value.trim()||elContatto.value.trim());
+    rowConsent.classList.toggle('on',haDati);
+  }
+  window.apriAdesione=function(id,titolo){
+    current={id:id,titolo:titolo||''};
+    reset();
+    elEvento.textContent=current.titolo;
+    modal.classList.add('on');
+  };
+  function chiudi(){modal.classList.remove('on');}
+  document.getElementById('ad-x').addEventListener('click',chiudi);
+  document.getElementById('ad-cancel').addEventListener('click',chiudi);
+  modal.addEventListener('click',function(e){if(e.target===modal)chiudi();});
+  [elNome,elCognome,elContatto].forEach(function(el){el.addEventListener('input',aggiornaConsenso);});
+
+  btnConfirm.addEventListener('click',function(){
+    elMsg.textContent='';elMsg.className='modal__msg';
+    var nome=elNome.value.trim(),cognome=elCognome.value.trim(),contatto=elContatto.value.trim();
+    var haDati=!!(nome||cognome||contatto);
+    if(haDati && !elConsenso.checked){
+      elMsg.className='modal__msg err';elMsg.textContent='Per inviare i tuoi dati spunta il consenso privacy.';
+      return;
+    }
+    btnConfirm.disabled=true;btnConfirm.textContent='Invio…';
+    fetch('/api/adesione',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({evento_id:current.id,titolo:current.titolo,nome:nome,cognome:cognome,contatto:contatto,consenso:elConsenso.checked})
+    }).then(function(r){return r.json();}).then(function(d){
+      if(d.success){
+        elMsg.className='modal__msg ok';
+        elMsg.textContent=haDati?'Grazie, partecipazione registrata!':'Grazie! Partecipazione registrata.';
+        btnConfirm.textContent='Registrato ✓';
+        setTimeout(chiudi,1800);
+      }else{
+        elMsg.className='modal__msg err';elMsg.textContent=d.message||'Invio non riuscito, riprova.';
+        btnConfirm.disabled=false;btnConfirm.textContent='Confermo la partecipazione';
+      }
+    }).catch(function(){
+      elMsg.className='modal__msg err';elMsg.textContent='Invio non riuscito, riprova.';
+      btnConfirm.disabled=false;btnConfirm.textContent='Confermo la partecipazione';
+    });
+  });
 })();
 </script>
 </body></html>
