@@ -186,11 +186,23 @@
 </header>
 <main>
 <section class="phero"><div class="wrap"><p class="eyebrow">Calendario</p><h1>Eventi e appuntamenti</h1><p>Allenamenti, raduni, open day e iniziative della comunit&#224;. Qui trovi tutte le date.</p></div></section>
+
 <section><div class="wrap">
-<div class="ev reveal"><div class="date"><span class="d">14</span><span class="m">Set</span></div><div class="body"><h3>Open Day &#8212; Prova le discipline</h3><div class="meta">Campo sportivo comunale &#183; 9:30</div><p>Giornata aperta a tutti: vieni a conoscere l&#8217;associazione e a provare gratuitamente le attivit&#224;.</p><a class="btn btn--ghost" href="iscrizioni.html">Partecipa</a></div></div>
-<div class="ev reveal"><div class="date"><span class="d">05</span><span class="m">Ott</span></div><div class="body"><h3>Allenamento Outdoor Funzionale</h3><div class="meta">Parco cittadino &#183; 10:00</div><p>Sessione all&#8217;aperto aperta ai soci. Forza, resistenza e gioco di squadra immersi nel verde.</p><a class="btn btn--ghost" href="#contatti">Info</a></div></div>
-<div class="ev reveal"><div class="date"><span class="d">19</span><span class="m">Ott</span></div><div class="body"><h3>Raduno della comunit&#224;</h3><div class="meta">Sede dell&#8217;associazione &#183; 16:00</div><p>Un pomeriggio insieme nel segno dei valori bersaglieri: sport, convivialit&#224; e spirito di corpo.</p><a class="btn btn--ghost" href="#contatti">Info</a></div></div>
-</div></section></main>
+  <div id="ev-loading" class="note" style="border-style:solid;border-color:rgba(110,16,35,.16)">Caricamento eventi&#8230;</div>
+
+  <div id="ev-prossimi-wrap" style="display:none">
+    <div class="sec-head" style="margin-bottom:24px"><h2 style="font-size:clamp(22px,3.6vw,30px)">Prossimi appuntamenti</h2></div>
+    <div id="ev-prossimi"></div>
+  </div>
+
+  <div id="ev-passati-wrap" style="display:none;margin-top:48px">
+    <div class="sec-head" style="margin-bottom:24px"><h2 style="font-size:clamp(22px,3.6vw,30px)">Eventi passati</h2></div>
+    <div id="ev-passati"></div>
+  </div>
+
+  <div id="ev-vuoto" class="note" style="display:none">Al momento non ci sono eventi in programma. <b>Torna presto</b> per gli aggiornamenti, oppure <a href="iscrizioni.html" style="color:var(--amaranto)">iscriviti</a> per restare in contatto.</div>
+</div></section>
+</main>
 <footer id="contatti">
   <div class="wrap">
     <div class="foot">
@@ -226,4 +238,56 @@
   document.querySelectorAll('.menu a').forEach(a=>a.addEventListener('click',()=>{const c=document.getElementById('nt');if(c)c.checked=false}));
 </script>
 
+<script>
+(function(){
+  var MESI=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+  function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"})[c];});}
+  function parseData(s){ // AAAA-MM-GG -> Date (locale, mezzogiorno per evitare problemi di fuso)
+    if(!s) return null;
+    var m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!m) return null;
+    return new Date(+m[1], +m[2]-1, +m[3], 12, 0, 0);
+  }
+  function card(ev){
+    var d=parseData(ev.data_evento);
+    var giorno=d?("0"+d.getDate()).slice(-2):"&#8212;";
+    var mese=d?MESI[d.getMonth()]:"";
+    var meta=[];
+    if(ev.luogo) meta.push(esc(ev.luogo));
+    if(ev.ora) meta.push(esc(ev.ora));
+    var metaHtml=meta.length?'<div class="meta">'+meta.join(" &#183; ")+'</div>':"";
+    var descHtml=ev.descrizione?'<p>'+esc(ev.descrizione)+'</p>':"";
+    return '<div class="ev reveal in">'
+      + '<div class="date"><span class="d">'+giorno+'</span><span class="m">'+mese+'</span></div>'
+      + '<div class="body"><h3>'+esc(ev.titolo)+'</h3>'+metaHtml+descHtml
+      + '<a class="btn btn--ghost" href="iscrizioni.html">Partecipa</a></div></div>';
+  }
+  function show(id){var el=document.getElementById(id);if(el)el.style.display="";}
+  function hide(id){var el=document.getElementById(id);if(el)el.style.display="none";}
+
+  fetch("/api/eventi",{headers:{"Accept":"application/json"}})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      hide("ev-loading");
+      var items=(data && data.items)||[];
+      var oggi=new Date(); oggi.setHours(0,0,0,0);
+      var prossimi=[], passati=[];
+      items.forEach(function(ev){
+        var d=parseData(ev.data_evento);
+        if(d && d>=oggi) prossimi.push(ev); else passati.push(ev);
+      });
+      prossimi.sort(function(a,b){return (a.data_evento||"").localeCompare(b.data_evento||"");});
+      passati.sort(function(a,b){return (b.data_evento||"").localeCompare(a.data_evento||"");});
+      if(!prossimi.length && !passati.length){ show("ev-vuoto"); return; }
+      if(prossimi.length){ document.getElementById("ev-prossimi").innerHTML=prossimi.map(card).join(""); show("ev-prossimi-wrap"); }
+      if(passati.length){ document.getElementById("ev-passati").innerHTML=passati.map(card).join(""); show("ev-passati-wrap"); }
+    })
+    .catch(function(){
+      hide("ev-loading");
+      var v=document.getElementById("ev-vuoto");
+      v.innerHTML="Non &egrave; stato possibile caricare gli eventi in questo momento. Riprova pi&#249; tardi.";
+      show("ev-vuoto");
+    });
+})();
+</script>
 </body></html>

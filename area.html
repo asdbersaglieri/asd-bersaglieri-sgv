@@ -16,54 +16,158 @@
   header img{height:42px}
   header h1{font-family:'Cinzel',serif;font-size:20px;font-weight:700;letter-spacing:.02em}
   header span{font-size:12px;color:var(--oro);letter-spacing:.18em;text-transform:uppercase;display:block;margin-top:2px}
+
+  /* SCHEDE */
+  .tabs{background:var(--amaranto-deep);display:flex;gap:2px;padding:0 24px;overflow-x:auto}
+  .tab{font-family:'Cinzel',serif;font-weight:600;font-size:14px;letter-spacing:.04em;color:rgba(247,244,227,.7);background:none;border:none;padding:14px 20px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+  .tab:hover{color:#F7F4E3}
+  .tab.on{color:#F7F4E3;border-bottom-color:var(--oro)}
+
   .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  .panel{display:none}
+  .panel.on{display:block}
+
   .bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px}
   .bar input[type=search]{flex:1;min-width:220px;padding:11px 14px;border:1px solid rgba(110,16,35,.3);border-radius:8px;font-size:14px;background:#fff}
   .count{font-size:13px;color:var(--ink-soft);font-weight:600}
   .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;letter-spacing:.02em;border:1.5px solid var(--oro);background:var(--oro);color:#3a2407;padding:10px 18px;border-radius:7px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
   .btn:hover{background:var(--amaranto);color:#F7F4E3;border-color:var(--oro)}
+  .btn:disabled{opacity:.55;cursor:default}
   .btn.ghost{background:transparent;color:var(--amaranto)}
   .btn.ghost:hover{background:var(--amaranto);color:#F7F4E3}
+
   .tablewrap{background:#fff;border:1px solid rgba(110,16,35,.16);border-radius:12px;overflow:auto}
-  table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
   th,td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(110,16,35,.1);vertical-align:top}
   th{background:var(--amaranto);color:#F7F4E3;font-family:'Cinzel',serif;font-weight:600;font-size:12px;position:sticky;top:0;white-space:nowrap}
   tr:hover td{background:#FBF6E6}
   .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#EFE8D2;color:var(--amaranto)}
   .tag.min{background:#F6D9DE;color:#8E1B2E}
+  .tag.draft{background:#E7E1CF;color:#7a6a3a}
+  .tag.pub{background:#D9EAD9;color:#2c6b34}
   .del{border:none;background:none;color:#B81E33;cursor:pointer;font-size:16px;padding:4px 8px;border-radius:6px}
   .del:hover{background:#F6D9DE}
   .state{padding:40px;text-align:center;color:var(--ink-soft)}
-  @media(max-width:600px){.wrap{padding:14px}}
+
+  /* FORM eventi */
+  .formcard{background:#fff;border:1px solid rgba(110,16,35,.16);border-radius:12px;padding:24px;margin-bottom:24px}
+  .formcard h2{font-family:'Cinzel',serif;font-size:18px;color:var(--amaranto);margin-bottom:18px}
+  .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+  .formgrid .full{grid-column:1/-1}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--amaranto);margin-bottom:6px}
+  .field input,.field textarea{width:100%;padding:11px 13px;border:1px solid rgba(110,16,35,.26);border-radius:7px;font-family:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  .field textarea{min-height:84px;resize:vertical}
+  .field input:focus,.field textarea:focus{outline:2px solid var(--oro);outline-offset:1px;border-color:var(--oro)}
+  .pubrow{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--ink);font-weight:500;margin-top:6px}
+  .pubrow input{width:18px;height:18px;accent-color:var(--amaranto)}
+  .formactions{display:flex;gap:12px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .msg{font-size:13px;font-weight:600}
+  .msg.ok{color:#2c6b34}.msg.err{color:#B81E33}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:4px}
+
+  @media(max-width:600px){.wrap{padding:14px}.formgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header>
   <img src="assets/logo.png" alt="">
-  <div><h1>Area riservata</h1><span>Iscrizioni</span></div>
+  <div><h1>Area riservata</h1><span>Consiglio direttivo</span></div>
 </header>
+
+<nav class="tabs">
+  <button class="tab on" data-panel="iscrizioni">Iscrizioni</button>
+  <button class="tab" data-panel="eventi">Eventi</button>
+</nav>
+
 <div class="wrap">
-  <div class="bar">
-    <input type="search" id="q" placeholder="Cerca per nome, email, comune…">
-    <span class="count" id="count"></span>
-    <button class="btn ghost" id="refresh">&#8635; Aggiorna</button>
-    <button class="btn" id="csv">&#8615; Scarica CSV</button>
-  </div>
-  <div class="tablewrap">
-    <table id="tbl">
-      <thead><tr>
-        <th>Data</th><th>Nome</th><th>Cognome</th><th>Email</th><th>Cellulare</th>
-        <th>Comune</th><th>Nascita</th><th>Cod. fiscale</th><th>Attività</th>
-        <th>Minore</th><th>Genitore/Tutore</th><th></th>
-      </tr></thead>
-      <tbody id="rows"><tr><td colspan="12" class="state">Caricamento…</td></tr></tbody>
-    </table>
-  </div>
+
+  <!-- ============ ISCRIZIONI ============ -->
+  <section class="panel on" id="panel-iscrizioni">
+    <div class="bar">
+      <input type="search" id="q" placeholder="Cerca per nome, email, comune…">
+      <span class="count" id="count"></span>
+      <button class="btn ghost" id="refresh">&#8635; Aggiorna</button>
+      <button class="btn" id="csv">&#8615; Scarica CSV</button>
+    </div>
+    <div class="tablewrap">
+      <table id="tbl">
+        <thead><tr>
+          <th>Data</th><th>Nome</th><th>Cognome</th><th>Email</th><th>Cellulare</th>
+          <th>Comune</th><th>Nascita</th><th>Cod. fiscale</th><th>Attività</th>
+          <th>Minore</th><th>Genitore/Tutore</th><th></th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="12" class="state">Caricamento…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ EVENTI ============ -->
+  <section class="panel" id="panel-eventi">
+    <div class="formcard">
+      <h2>Nuovo evento</h2>
+      <div class="formgrid">
+        <div class="field full">
+          <label for="e-titolo">Titolo *</label>
+          <input type="text" id="e-titolo" maxlength="120" placeholder="Es. Open Day — Prova le discipline">
+        </div>
+        <div class="field">
+          <label for="e-data">Data *</label>
+          <input type="date" id="e-data">
+        </div>
+        <div class="field">
+          <label for="e-ora">Ora (opzionale)</label>
+          <input type="text" id="e-ora" maxlength="20" placeholder="Es. 9:30">
+        </div>
+        <div class="field full">
+          <label for="e-luogo">Luogo (opzionale)</label>
+          <input type="text" id="e-luogo" maxlength="120" placeholder="Es. Campo sportivo comunale">
+        </div>
+        <div class="field full">
+          <label for="e-desc">Descrizione (opzionale)</label>
+          <textarea id="e-desc" maxlength="600" placeholder="Breve descrizione dell'evento…"></textarea>
+        </div>
+        <div class="field full">
+          <label class="pubrow"><input type="checkbox" id="e-pub" checked> Pubblica subito sul sito</label>
+          <div class="hint">Se lo lasci spento, l'evento resta come bozza: visibile solo qui, non sul sito.</div>
+        </div>
+      </div>
+      <div class="formactions">
+        <button class="btn" id="e-save">&#43; Aggiungi evento</button>
+        <span class="msg" id="e-msg"></span>
+      </div>
+    </div>
+
+    <div class="bar">
+      <span class="count" id="e-count"></span>
+      <button class="btn ghost" id="e-refresh">&#8635; Aggiorna</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Data</th><th>Titolo</th><th>Luogo</th><th>Ora</th><th>Stato</th><th></th>
+        </tr></thead>
+        <tbody id="e-rows"><tr><td colspan="6" class="state">Caricamento…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
 </div>
+
 <script>
-let DATA=[];
 const $=id=>document.getElementById(id);
 function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---------- SCHEDE ---------- */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  $('panel-'+t.dataset.panel).classList.add('on');
+  if(t.dataset.panel==='eventi' && !EV_LOADED){loadEventi();}
+}));
+
+/* ===================== ISCRIZIONI ===================== */
+let DATA=[];
 function fmtDate(iso){if(!iso)return '';const d=new Date(iso);if(isNaN(d))return esc(iso);return d.toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 function render(list){
   const tb=$('rows');
@@ -80,7 +184,7 @@ function render(list){
   $('count').textContent=list.length+(list.length===1?' iscrizione':' iscrizioni');
   tb.querySelectorAll('.del').forEach(b=>b.addEventListener('click',()=>del(b.dataset.id)));
 }
-function filter(){
+function filtra(){
   const q=$('q').value.toLowerCase().trim();
   render(!q?DATA:DATA.filter(r=>JSON.stringify(r).toLowerCase().includes(q)));
 }
@@ -90,7 +194,7 @@ async function load(){
     const res=await fetch('/api/admin/list',{headers:{'Accept':'application/json'}});
     const data=await res.json();
     DATA=data.items||[];
-    filter();
+    filtra();
   }catch(e){$('rows').innerHTML='<tr><td colspan="12" class="state">Errore nel caricamento.</td></tr>';}
 }
 async function del(id){
@@ -98,7 +202,7 @@ async function del(id){
   try{
     const res=await fetch('/api/admin/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id)})});
     const d=await res.json();
-    if(d.success){DATA=DATA.filter(r=>String(r.id)!==String(id));filter();}
+    if(d.success){DATA=DATA.filter(r=>String(r.id)!==String(id));filtra();}
     else alert('Eliminazione non riuscita.');
   }catch(e){alert('Eliminazione non riuscita.');}
 }
@@ -111,10 +215,82 @@ function toCSV(){
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   a.download='iscrizioni-asd-bersaglieri.csv';a.click();
 }
-$('q').addEventListener('input',filter);
+$('q').addEventListener('input',filtra);
 $('refresh').addEventListener('click',load);
 $('csv').addEventListener('click',toCSV);
 load();
+
+/* ===================== EVENTI ===================== */
+let EV=[], EV_LOADED=false;
+const MESI=["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+function fmtDataEv(s){
+  if(!s)return '';
+  const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m)return esc(s);
+  return m[3]+' '+MESI[(+m[2])-1]+' '+m[1];
+}
+function renderEventi(){
+  const tb=$('e-rows');
+  if(!EV.length){tb.innerHTML='<tr><td colspan="6" class="state">Nessun evento. Aggiungine uno qui sopra.</td></tr>';$('e-count').textContent='0 eventi';return;}
+  tb.innerHTML=EV.map(r=>`<tr>
+    <td>${fmtDataEv(r.data_evento)}</td>
+    <td><b>${esc(r.titolo)}</b>${r.descrizione?'<br><small style="color:var(--ink-soft)">'+esc(r.descrizione)+'</small>':''}</td>
+    <td>${esc(r.luogo)}</td>
+    <td>${esc(r.ora)}</td>
+    <td>${Number(r.pubblicato)===1?'<span class="tag pub">Pubblicato</span>':'<span class="tag draft">Bozza</span>'}</td>
+    <td><button class="del" title="Elimina" data-id="${r.id}">&#128465;</button></td>
+  </tr>`).join('');
+  $('e-count').textContent=EV.length+(EV.length===1?' evento':' eventi');
+  tb.querySelectorAll('.del').forEach(b=>b.addEventListener('click',()=>delEvento(b.dataset.id)));
+}
+async function loadEventi(){
+  EV_LOADED=true;
+  $('e-rows').innerHTML='<tr><td colspan="6" class="state">Caricamento…</td></tr>';
+  try{
+    const res=await fetch('/api/admin/eventi-list',{headers:{'Accept':'application/json'}});
+    const data=await res.json();
+    EV=data.items||[];
+    renderEventi();
+  }catch(e){$('e-rows').innerHTML='<tr><td colspan="6" class="state">Errore nel caricamento.</td></tr>';}
+}
+async function saveEvento(){
+  const msg=$('e-msg'); msg.textContent='';
+  const titolo=$('e-titolo').value.trim();
+  const data_evento=$('e-data').value.trim();
+  if(!titolo||!data_evento){msg.className='msg err';msg.textContent='Titolo e data sono obbligatori.';return;}
+  const body={
+    titolo, data_evento,
+    ora:$('e-ora').value.trim(),
+    luogo:$('e-luogo').value.trim(),
+    descrizione:$('e-desc').value.trim(),
+    pubblicato:$('e-pub').checked
+  };
+  $('e-save').disabled=true;
+  try{
+    const res=await fetch('/api/admin/eventi-add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await res.json();
+    if(d.success){
+      msg.className='msg ok';msg.textContent='Evento aggiunto.';
+      $('e-titolo').value='';$('e-data').value='';$('e-ora').value='';$('e-luogo').value='';$('e-desc').value='';$('e-pub').checked=true;
+      loadEventi();
+      setTimeout(()=>{msg.textContent='';},2500);
+    }else{
+      msg.className='msg err';msg.textContent=d.message||'Salvataggio non riuscito.';
+    }
+  }catch(e){msg.className='msg err';msg.textContent='Salvataggio non riuscito.';}
+  $('e-save').disabled=false;
+}
+async function delEvento(id){
+  if(!confirm('Eliminare questo evento? L\'azione è definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/eventi-delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id)})});
+    const d=await res.json();
+    if(d.success){EV=EV.filter(r=>String(r.id)!==String(id));renderEventi();}
+    else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+$('e-save').addEventListener('click',saveEvento);
+$('e-refresh').addEventListener('click',loadEventi);
 </script>
 </body>
 </html>
