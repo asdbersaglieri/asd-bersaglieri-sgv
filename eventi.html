@@ -117,6 +117,9 @@
   .ev .body h3{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:var(--amaranto);margin-bottom:4px}
   .ev .meta{font-size:13px;color:#9a6a12;font-weight:600;letter-spacing:.04em;margin-bottom:8px}
   .ev .body p{font-size:14.5px;color:var(--ink-soft);margin-bottom:14px}
+  .ev-loc{display:block;margin:4px 0 14px}
+  .ev-loc img{max-width:100%;max-height:340px;border-radius:8px;border:1px solid rgba(110,16,35,.16);box-shadow:0 6px 20px rgba(60,12,20,.14);transition:transform .3s}
+  .ev-loc:hover img{transform:scale(1.01)}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .tile{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:4/3;border:1px solid rgba(110,16,35,.16);cursor:pointer;background:var(--crema2)}
   .tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
@@ -257,9 +260,14 @@
     if(ev.ora) meta.push(esc(ev.ora));
     var metaHtml=meta.length?'<div class="meta">'+meta.join(" &#183; ")+'</div>':"";
     var descHtml=ev.descrizione?'<p>'+esc(ev.descrizione)+'</p>':"";
+    var locHtml="";
+    if(ev.locandina){
+      var url="/api/locandina/"+encodeURIComponent(ev.locandina);
+      locHtml='<a class="ev-loc" href="'+url+'" target="_blank" rel="noopener"><img src="'+url+'" alt="Locandina '+esc(ev.titolo)+'" loading="lazy"></a>';
+    }
     return '<div class="ev reveal in">'
       + '<div class="date"><span class="d">'+giorno+'</span><span class="m">'+mese+'</span></div>'
-      + '<div class="body"><h3>'+esc(ev.titolo)+'</h3>'+metaHtml+descHtml
+      + '<div class="body"><h3>'+esc(ev.titolo)+'</h3>'+metaHtml+locHtml+descHtml
       + '<a class="btn btn--ghost" href="iscrizioni.html">Partecipa</a></div></div>';
   }
   function show(id){var el=document.getElementById(id);if(el)el.style.display="";}

@@ -127,6 +127,15 @@
           <textarea id="e-desc" maxlength="600" placeholder="Breve descrizione dell'evento…"></textarea>
         </div>
         <div class="field full">
+          <label for="e-loc">Locandina (opzionale)</label>
+          <input type="file" id="e-loc" accept="image/*">
+          <div class="hint">Immagine della locandina (JPG, PNG…). Massimo 10 MB.</div>
+          <div id="e-loc-prev" style="display:none;margin-top:10px">
+            <img id="e-loc-img" alt="anteprima" style="max-height:160px;border-radius:8px;border:1px solid rgba(110,16,35,.2)">
+            <div><button type="button" class="btn ghost" id="e-loc-clear" style="margin-top:8px;padding:6px 12px">Rimuovi immagine</button></div>
+          </div>
+        </div>
+        <div class="field full">
           <label class="pubrow"><input type="checkbox" id="e-pub" checked> Pubblica subito sul sito</label>
           <div class="hint">Se lo lasci spento, l'evento resta come bozza: visibile solo qui, non sul sito.</div>
         </div>
@@ -234,7 +243,7 @@ function renderEventi(){
   if(!EV.length){tb.innerHTML='<tr><td colspan="6" class="state">Nessun evento. Aggiungine uno qui sopra.</td></tr>';$('e-count').textContent='0 eventi';return;}
   tb.innerHTML=EV.map(r=>`<tr>
     <td>${fmtDataEv(r.data_evento)}</td>
-    <td><b>${esc(r.titolo)}</b>${r.descrizione?'<br><small style="color:var(--ink-soft)">'+esc(r.descrizione)+'</small>':''}</td>
+    <td><b>${esc(r.titolo)}</b>${r.locandina?'<br><img src="/api/locandina/'+encodeURIComponent(r.locandina)+'" alt="" style="max-height:46px;border-radius:5px;margin-top:5px;border:1px solid rgba(110,16,35,.2)">':''}${r.descrizione?'<br><small style="color:var(--ink-soft)">'+esc(r.descrizione)+'</small>':''}</td>
     <td>${esc(r.luogo)}</td>
     <td>${esc(r.ora)}</td>
     <td>${Number(r.pubblicato)===1?'<span class="tag pub">Pubblicato</span>':'<span class="tag draft">Bozza</span>'}</td>
@@ -258,28 +267,46 @@ async function saveEvento(){
   const titolo=$('e-titolo').value.trim();
   const data_evento=$('e-data').value.trim();
   if(!titolo||!data_evento){msg.className='msg err';msg.textContent='Titolo e data sono obbligatori.';return;}
-  const body={
-    titolo, data_evento,
-    ora:$('e-ora').value.trim(),
-    luogo:$('e-luogo').value.trim(),
-    descrizione:$('e-desc').value.trim(),
-    pubblicato:$('e-pub').checked
-  };
+  const file=$('e-loc').files[0];
+  if(file && file.size>10*1024*1024){msg.className='msg err';msg.textContent='La locandina è troppo grande (massimo 10 MB).';return;}
+  const fd=new FormData();
+  fd.append('titolo',titolo);
+  fd.append('data_evento',data_evento);
+  fd.append('ora',$('e-ora').value.trim());
+  fd.append('luogo',$('e-luogo').value.trim());
+  fd.append('descrizione',$('e-desc').value.trim());
+  fd.append('pubblicato',$('e-pub').checked?'1':'0');
+  if(file) fd.append('locandina',file);
   $('e-save').disabled=true;
+  const old=$('e-save').textContent; $('e-save').textContent='Salvataggio…';
   try{
-    const res=await fetch('/api/admin/eventi-add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const res=await fetch('/api/admin/eventi-add',{method:'POST',body:fd});
     const d=await res.json();
     if(d.success){
       msg.className='msg ok';msg.textContent='Evento aggiunto.';
       $('e-titolo').value='';$('e-data').value='';$('e-ora').value='';$('e-luogo').value='';$('e-desc').value='';$('e-pub').checked=true;
+      clearLoc();
       loadEventi();
       setTimeout(()=>{msg.textContent='';},2500);
     }else{
       msg.className='msg err';msg.textContent=d.message||'Salvataggio non riuscito.';
     }
   }catch(e){msg.className='msg err';msg.textContent='Salvataggio non riuscito.';}
-  $('e-save').disabled=false;
+  $('e-save').disabled=false; $('e-save').textContent=old;
 }
+function clearLoc(){
+  $('e-loc').value='';
+  $('e-loc-prev').style.display='none';
+  $('e-loc-img').src='';
+}
+$('e-loc').addEventListener('change',function(){
+  const f=this.files[0];
+  if(!f){clearLoc();return;}
+  const url=URL.createObjectURL(f);
+  $('e-loc-img').src=url;
+  $('e-loc-prev').style.display='';
+});
+$('e-loc-clear').addEventListener('click',clearLoc);
 async function delEvento(id){
   if(!confirm('Eliminare questo evento? L\'azione è definitiva.'))return;
   try{

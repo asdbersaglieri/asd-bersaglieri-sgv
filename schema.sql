@@ -20,5 +20,6 @@ CREATE TABLE IF NOT EXISTS eventi (
   ora TEXT,              -- opzionale, es. "09:30"
   luogo TEXT,
   descrizione TEXT,
-  pubblicato INTEGER DEFAULT 1   -- 1 = visibile sul sito, 0 = bozza
+  pubblicato INTEGER DEFAULT 1,  -- 1 = visibile sul sito, 0 = bozza
+  locandina TEXT         -- chiave del file immagine su R2 (opzionale)
 );
