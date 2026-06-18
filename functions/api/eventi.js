@@ -4,7 +4,7 @@ export async function onRequestGet(context) {
   try {
     if (!env.DB) return json({ items: [] });
     const { results } = await env.DB.prepare(
-      "SELECT id,titolo,data_evento,ora,luogo,descrizione FROM eventi WHERE pubblicato = 1 ORDER BY data_evento ASC"
+      "SELECT id,titolo,data_evento,ora,luogo,descrizione,locandina FROM eventi WHERE pubblicato = 1 ORDER BY data_evento ASC"
     ).all();
     return json({ items: results || [] });
   } catch (e) { return json({ items: [] }); }
