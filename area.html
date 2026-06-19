@@ -347,22 +347,28 @@ function renderAdesioni(){
   Object.keys(gruppi).sort().forEach(titolo=>{
     const lista=gruppi[titolo];
     html+=`<div class="formcard" style="padding:0;overflow:hidden">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#FBF6E6;border-bottom:1px solid rgba(110,16,35,.12)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;background:#FBF6E6;border-bottom:1px solid rgba(110,16,35,.12)">
         <b style="font-family:'Cinzel',serif;color:var(--amaranto);font-size:17px">${esc(titolo)}</b>
-        <span class="tag pub" style="font-size:13px">${lista.length} ${lista.length===1?'adesione':'adesioni'}</span>
+        <span style="display:flex;align-items:center;gap:12px">
+          <span class="tag pub" style="font-size:13px">${lista.length} ${lista.length===1?'adesione':'adesioni'}</span>
+          <button class="btn ghost ad-clear" style="padding:6px 12px;font-size:12px" data-titolo="${esc(titolo)}">Svuota tutte</button>
+        </span>
       </div>
-      <table style="min-width:auto"><thead><tr><th>Data e ora</th><th>Nome</th><th>Cognome</th><th>Contatto</th></tr></thead><tbody>`;
+      <table style="min-width:auto"><thead><tr><th>Data e ora</th><th>Nome</th><th>Cognome</th><th>Contatto</th><th></th></tr></thead><tbody>`;
     lista.forEach(a=>{
       const anon=!(a.nome||a.cognome||a.contatto);
       html+=`<tr>
         <td>${fmtDataOra(a.created_at)}</td>
         ${anon?'<td colspan="3" style="color:var(--ink-soft);font-style:italic">Partecipante anonimo</td>'
               :`<td>${esc(a.nome)}</td><td>${esc(a.cognome)}</td><td>${esc(a.contatto)}</td>`}
+        <td><button class="del ad-del" title="Elimina" data-id="${a.id}">&#128465;</button></td>
       </tr>`;
     });
     html+='</tbody></table></div>';
   });
   box.innerHTML=html;
+  box.querySelectorAll('.ad-del').forEach(b=>b.addEventListener('click',()=>delAdesione(b.dataset.id)));
+  box.querySelectorAll('.ad-clear').forEach(b=>b.addEventListener('click',()=>svuotaEvento(b.dataset.titolo)));
   $('ad-count').textContent=AD.length+(AD.length===1?' adesione totale':' adesioni totali');
 }
 async function loadAdesioni(){
@@ -386,6 +392,24 @@ function adCSV(){
 }
 $('ad-refresh').addEventListener('click',loadAdesioni);
 $('ad-csv').addEventListener('click',adCSV);
+async function delAdesione(id){
+  if(!confirm('Eliminare questa adesione? L\'azione è definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/adesioni-delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id)})});
+    const d=await res.json();
+    if(d.success){AD=AD.filter(a=>String(a.id)!==String(id));renderAdesioni();}
+    else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+async function svuotaEvento(titolo){
+  if(!confirm('Eliminare TUTTE le adesioni di "'+titolo+'"? L\'azione è definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/adesioni-delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({titolo:titolo})});
+    const d=await res.json();
+    if(d.success){AD=AD.filter(a=>(a.titolo_evento||'(evento senza titolo)')!==titolo);renderAdesioni();}
+    else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
 </script>
 </body>
 </html>
