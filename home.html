@@ -52,8 +52,10 @@
   .feature-img{border-radius:10px;overflow:hidden;box-shadow:0 16px 50px rgba(78,18,26,.16);border:1px solid rgba(110,16,35,.12);margin-bottom:42px}
   .feature-img img{width:100%}
 
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  .card{background:#fff;border:1px solid rgba(110,16,35,.12);border-radius:10px;padding:28px 24px;transition:transform .3s,box-shadow .3s}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
+  .card{background:#fff;border:1px solid rgba(110,16,35,.12);border-radius:10px;padding:0 24px 26px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+  .card .disc-thumb{margin:0 -24px 18px;background:var(--amaranto);line-height:0}
+  .card .disc-thumb img{display:block;width:100%;height:auto}
   .card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(78,18,26,.14)}
   .card .num{font-family:'Cinzel',serif;font-size:15px;color:var(--oro);font-weight:600;letter-spacing:.1em}
   .card h3{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:var(--amaranto);margin:8px 0 10px;line-height:1.2}
@@ -203,13 +205,19 @@
     <div class="wrap">
       <div class="sec-head reveal">
         <h2>Le nostre discipline</h2>
-        <p>Allenamento fisico, attivit&#224; all&#8217;aperto e gioco di squadra. Programmi pensati per ogni et&#224; e livello.</p>
+        <p>Sport, attivit&#224; all&#8217;aperto e gioco di squadra. Tante discipline pensate per ogni et&#224; e livello, nello spirito dei Bersaglieri.</p>
       </div>
-      <div class="feature-img reveal"><img src="assets/disc.jpg" alt="Le discipline: corsa, tiro, crossfit e padel"></div>
+      <div class="feature-img reveal"><img src="assets/discipline-header.jpg" alt="Le discipline dell&#8217;A.S.D. Bersaglieri SGV: crossfit, outdoor, teamwork, tiro, calcio a cinque, padel, orientamento e sopravvivenza"></div>
       <div class="cards">
-        <div class="card reveal"><span class="num">01</span><h3>Military Crossfit &amp; Tactical Fitness</h3><p>Programmi intensivi ispirati alla preparazione fisica operativa, per sviluppare forza, agilit&#224; e resilienza.</p></div>
-        <div class="card reveal"><span class="num">02</span><h3>Allenamento Outdoor Funzionale</h3><p>Sessioni all&#8217;aperto con strutture naturali, ecocompatibili o riciclate. Il corpo si allena dove c&#8217;&#232; spazio per muoversi.</p></div>
-        <div class="card reveal"><span class="num">03</span><h3>Teamwork &amp; Valori</h3><p>Attivit&#224; di coesione di gruppo ispirate alla tradizione bersagliera: si cresce e si vince insieme.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-01-crossfit.svg" alt="Military Crossfit e Tactical Fitness"></div><span class="num">01</span><h3>Military Crossfit &amp; Tactical Fitness</h3><p>Programmi intensivi ispirati alla preparazione fisica operativa: forza, agilit&#224; e resistenza, per ogni livello.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-02-outdoor.svg" alt="Allenamento Outdoor Funzionale"></div><span class="num">02</span><h3>Allenamento Outdoor Funzionale</h3><p>Sessioni all&#8217;aperto con il corpo come attrezzo: ci si allena dove c&#8217;&#232; spazio per muoversi, in mezzo alla natura.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-03-teamwork.svg" alt="Teamwork e Valori"></div><span class="num">03</span><h3>Teamwork &amp; Valori</h3><p>Attivit&#224; di coesione di gruppo nello spirito bersaglieresco: si cresce e si vince insieme.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-04-bersaglio.svg" alt="Tiro al bersaglio sportivo"></div><span class="num">04</span><h3>Tiro al bersaglio sportivo</h3><p>La disciplina identitaria dei Bersaglieri: precisione, controllo e concentrazione su poligono, per ogni livello.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-05-arco.svg" alt="Tiro con l&#8217;arco"></div><span class="num">05</span><h3>Tiro con l&#8217;arco</h3><p>Mira, respiro e gesto: uno sport di precisione che allena corpo e mente in egual misura.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-06-calcio.svg" alt="Calcio a Cinque"></div><span class="num">06</span><h3>Calcio a Cinque</h3><p>Gioco di squadra, ritmo e divertimento sul campo: lo sport che unisce.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-07-padel.svg" alt="Padel"></div><span class="num">07</span><h3>Padel</h3><p>Lo sport che cresce pi&#249; di tutti: dinamico, socievole e accessibile a ogni et&#224;.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-08-orientamento.svg" alt="Orientamento"></div><span class="num">08</span><h3>Orientamento</h3><p>Mappa, bussola e territorio: testa e gambe insieme, per muoversi con autonomia nello spazio.</p></div>
+        <div class="card reveal"><div class="disc-thumb"><img src="assets/disc-09-sopravvivenza.svg" alt="Sopravvivenza"></div><span class="num">09</span><h3>Sopravvivenza</h3><p>Tecniche outdoor e autonomia in ambiente: imparare a cavarsela, nello spirito del Corpo.</p></div>
       </div>
     </div>
   </section>
