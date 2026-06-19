@@ -33,15 +33,8 @@ export async function onRequestPost(context) {
       } catch (e) { /* se D1 non è ancora pronto, prosegue comunque con l'email */ }
     }
 
-    // 2) Email via Web3Forms (notifica all'associazione)
-    try {
-      const fd = new FormData();
-      fd.append("access_key", "88688de5-fafb-4c14-b53d-b8ad19b4dbed");
-      fd.append("subject", "Nuova iscrizione — ASD Bersaglieri SGV");
-      fd.append("from_name", "Sito ASD Bersaglieri SGV");
-      for (const [k, v] of form.entries()) { if (k !== "botcheck" && k !== "access_key") fd.append(k, v); }
-      await fetch("https://api.web3forms.com/submit", { method: "POST", body: fd });
-    } catch (e) { /* l'iscrizione è comunque salvata su D1 */ }
+    // 2) Email: NON viene inviata qui. Web3Forms blocca le chiamate dal server,
+    //    quindi la notifica parte dal browser (vedi iscrizioni.html).
 
     return json({ success: true });
   } catch (e) {
