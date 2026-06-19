@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ASD Bersaglieri SGV — App</title>
+<meta name="description" content="Accesso rapido al sito e all'area riservata dell'A.S.D. Bersaglieri SGV.">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#8E1B2E">
+
+<!-- iOS / Safari -->
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bersaglieri">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cremisi:#8E1B2E;
+    --cremisi-bright:#B81E33;
+    --oro:#C9A24B;
+    --oro-bright:#E6C879;
+    --inchiostro:#16110D;
+    --crema:#F4ECDD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--crema);
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgba(142,27,46,.55) 0%, rgba(142,27,46,0) 60%),
+      var(--inchiostro);
+    -webkit-font-smoothing:antialiased;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:clamp(28px,6vh,56px) 22px calc(clamp(20px,4vh,40px) + env(safe-area-inset-bottom));
+  }
+  .wrap{
+    width:100%;
+    max-width:430px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  .stemma{
+    width:clamp(96px,26vw,128px);
+    height:auto;
+    filter:drop-shadow(0 8px 26px rgba(0,0,0,.5));
+  }
+  .eyebrow{
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--oro);
+    padding-left:.4em;
+  }
+  .titolo{
+    font-family:'Cinzel',serif;
+    font-weight:700;
+    font-size:clamp(28px,7.5vw,38px);
+    line-height:1.02;
+    color:#fff;
+    text-shadow:0 2px 18px rgba(0,0,0,.5);
+  }
+  .sfregio{width:170px;height:14px;margin:2px 0 8px}
+  .sfregio path{fill:none;stroke-width:7;stroke-linecap:round}
+  .sfregio .s-verde{stroke:#1F9355}
+  .sfregio .s-bianco{stroke:var(--crema)}
+  .sfregio .s-rosso{stroke:var(--cremisi-bright)}
+
+  .hub{width:100%;display:flex;flex-direction:column;gap:14px;margin-top:4px}
+  .tile{
+    display:flex;align-items:center;gap:16px;
+    text-align:left;text-decoration:none;
+    padding:20px 22px;border-radius:14px;
+    border:1.5px solid transparent;
+    transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .tile .ico{flex:0 0 auto;width:34px;height:34px}
+  .tile .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .tile .lab{font-family:'Cinzel',serif;font-weight:700;font-size:19px;letter-spacing:.02em;line-height:1.1}
+  .tile .sub{font-size:13px;line-height:1.3;opacity:.85}
+  .tile:active{transform:scale(.98)}
+  .tile:focus-visible{outline:3px solid var(--oro-bright);outline-offset:3px}
+
+  /* Bottone primario: SITO WEB (pieno oro) */
+  .tile--gold{
+    background:var(--oro);
+    color:var(--inchiostro);
+    border-color:var(--oro-bright);
+    box-shadow:0 8px 26px rgba(0,0,0,.4);
+  }
+  .tile--gold .sub{opacity:.78}
+  .tile--gold .ico{stroke:var(--inchiostro)}
+  .tile--gold:hover{background:var(--oro-bright)}
+
+  /* Bottone secondario: AREA RISERVATA (contorno) */
+  .tile--line{
+    background:rgba(244,236,221,.05);
+    color:var(--crema);
+    border-color:rgba(201,162,75,.55);
+  }
+  .tile--line .lab{color:var(--oro-bright)}
+  .tile--line .ico{stroke:var(--oro)}
+  .tile--line:hover{background:rgba(201,162,75,.12);border-color:var(--oro)}
+
+  .install{min-height:30px;margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:8px}
+  #installBtn{
+    display:none;align-items:center;gap:.6em;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;letter-spacing:.04em;
+    color:var(--crema);background:transparent;
+    border:1.5px solid rgba(201,162,75,.6);border-radius:999px;
+    padding:11px 22px;cursor:pointer;
+    transition:background .25s ease,border-color .25s ease;
+  }
+  #installBtn:hover{background:rgba(201,162,75,.14);border-color:var(--oro)}
+  #installBtn .ico{width:18px;height:18px;stroke:var(--oro)}
+  #iosHint{display:none;font-size:13px;line-height:1.45;color:rgba(244,236,221,.8);max-width:30ch}
+  #iosHint b{color:var(--oro-bright);font-weight:600}
+
+  footer{margin-top:14px;font-size:11px;letter-spacing:.06em;color:rgba(244,236,221,.45)}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <img class="stemma" src="/assets/logo.png" alt="Stemma A.S.D. Bersaglieri SGV" width="640" height="737">
+    <p class="eyebrow">App ufficiale</p>
+    <h1 class="titolo">Bersaglieri SGV</h1>
+    <svg class="sfregio" viewBox="0 0 240 18" aria-hidden="true">
+      <path class="s-verde"  d="M6 11 C 50 4, 90 14, 118 9"/>
+      <path class="s-bianco" d="M60 10 C 100 3, 140 13, 178 8"/>
+      <path class="s-rosso"  d="M120 11 C 160 4, 200 14, 234 9"/>
+    </svg>
+
+    <nav class="hub" aria-label="Scelte rapide">
+      <a class="tile tile--gold" href="home.html">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>
+          <path d="M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>
+        </svg>
+        <span class="txt">
+          <span class="lab">Sito web</span>
+          <span class="sub">Notizie, eventi, galleria e iscrizioni</span>
+        </span>
+      </a>
+
+      <a class="tile tile--line" href="area.html">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4.5" y="10.5" width="15" height="10" rx="2"/>
+          <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><circle cx="12" cy="15.5" r="1.4"/>
+        </svg>
+        <span class="txt">
+          <span class="lab">Area riservata</span>
+          <span class="sub">Pannello del consiglio (accesso protetto)</span>
+        </span>
+      </a>
+    </nav>
+
+    <div class="install">
+      <button id="installBtn" type="button">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>
+        </svg>
+        Installa l'app sul telefono
+      </button>
+      <p id="iosHint">Per installarla: tocca <b>Condividi</b> in basso, poi <b>«Aggiungi a Home»</b>.</p>
+    </div>
+
+    <footer>A.S.D. Bersaglieri SGV · San Giovanni Valdarno</footer>
+  </main>
+
+<script>
+  // 1) Registra il service worker (abilita installazione + apertura offline dell'hub)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+
+  // 2) Stato installazione
+  var installBtn = document.getElementById('installBtn');
+  var iosHint = document.getElementById('iosHint');
+  var deferredPrompt = null;
+
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // Android/Chrome: mostra il bottone quando il browser dice che è installabile
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!isStandalone) installBtn.style.display = 'inline-flex';
+  });
+
+  installBtn.addEventListener('click', function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.finally(function () {
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  });
+
+  window.addEventListener('appinstalled', function () {
+    installBtn.style.display = 'none';
+    iosHint.style.display = 'none';
+  });
+
+  // iPhone (Safari non espone beforeinstallprompt): mostra l'istruzione manuale
+  if (isIOS && !isStandalone) {
+    iosHint.style.display = 'block';
+  }
+</script>
+</body>
+</html>
