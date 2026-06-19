@@ -293,6 +293,11 @@
     }
     m.style.color='var(--ink-soft)'; m.textContent='Invio in corso&#8230;';
     var fd=new FormData(form); fd.append('access_key',ACCESS_KEY);
+    fd.append('subject','Nuova iscrizione — ASD Bersaglieri SGV');
+    fd.append('from_name','Sito ASD Bersaglieri SGV');
+    // Email di notifica: inviata dal browser (Web3Forms blocca le chiamate dal server)
+    try{ fetch('https://api.web3forms.com/submit',{method:'POST',body:fd}); }catch(e){}
+    // Salvataggio nel database
     fetch('/api/iscrizione',{method:'POST',body:fd})
       .then(function(r){return r.json();})
       .then(function(d){

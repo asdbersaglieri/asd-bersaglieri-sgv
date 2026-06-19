@@ -389,6 +389,23 @@
       return;
     }
     btnConfirm.disabled=true;btnConfirm.textContent='Invio…';
+    // Email di notifica: inviata dal browser (Web3Forms blocca le chiamate dal server)
+    try{
+      var wf=new FormData();
+      wf.append('access_key','88688de5-fafb-4c14-b53d-b8ad19b4dbed');
+      wf.append('subject','Adesione evento: '+(current.titolo||'(senza titolo)'));
+      wf.append('from_name','Sito ASD Bersaglieri SGV');
+      wf.append('Evento',current.titolo||'');
+      if(haDati){
+        wf.append('Nome',nome||'(non indicato)');
+        wf.append('Cognome',cognome||'(non indicato)');
+        wf.append('Contatto',contatto||'(non indicato)');
+      }else{
+        wf.append('Adesione','ANONIMA (nessun dato lasciato)');
+      }
+      fetch('https://api.web3forms.com/submit',{method:'POST',body:wf});
+    }catch(e){}
+    // Salvataggio nel database
     fetch('/api/adesione',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({evento_id:current.id,titolo:current.titolo,nome:nome,cognome:cognome,contatto:contatto,consenso:elConsenso.checked})
