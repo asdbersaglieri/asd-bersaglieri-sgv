@@ -35,3 +35,17 @@ CREATE TABLE IF NOT EXISTS adesioni (
   contatto TEXT,         -- facoltativo (telefono o email)
   consenso TEXT          -- "Accettato" se ha lasciato dati
 );
+
+-- Galleria: album e foto (gestiti dal pannello, immagini su R2)
+CREATE TABLE IF NOT EXISTS album (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT,
+  nome TEXT,
+  copertina TEXT
+);
+CREATE TABLE IF NOT EXISTS foto (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT,
+  album_id INTEGER,
+  chiave TEXT
+);

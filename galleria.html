@@ -124,6 +124,14 @@
   .tile.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--amaranto);border:1.5px dashed var(--amaranto);cursor:default;background:#FBF6E6}
   .tile.empty span{font-size:30px;line-height:1}
   .tile.empty small{font-size:12px;letter-spacing:.1em;margin-top:8px;color:var(--ink-soft)}
+  .album-tile{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:4/3;border:1px solid rgba(110,16,35,.16);cursor:pointer;background:var(--amaranto-deep)}
+  .album-tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s;opacity:.92}
+  .album-tile:hover img{transform:scale(1.06);opacity:1}
+  .album-tile .cap{position:absolute;left:0;right:0;bottom:0;padding:16px 16px 14px;background:linear-gradient(to top,rgba(30,8,12,.86),rgba(30,8,12,0));color:#fff}
+  .album-tile .cap b{font-family:'Cinzel',serif;font-size:17px;display:block;line-height:1.15}
+  .album-tile .cap span{font-size:12px;color:var(--oro-bright);letter-spacing:.05em}
+  .album-tile.nocov{display:flex;align-items:center;justify-content:center}
+  .album-tile.nocov .cap{background:none;position:static;text-align:center}
   .lb{position:fixed;inset:0;background:rgba(30,12,8,.93);display:none;align-items:center;justify-content:center;z-index:100;padding:24px}
   .lb.on{display:flex}
   .lb img{max-width:92vw;max-height:88vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
@@ -187,15 +195,22 @@
 <main>
 <section class="phero"><div class="wrap"><p class="eyebrow">Galleria</p><h1>I nostri momenti</h1><p>Allenamenti, eventi e vita di squadra. Le immagini dell&#8217;associazione.</p></div></section>
 <section><div class="wrap">
-<div class="note reveal"><b>Immagini di esempio.</b> Sostituiremo questi riquadri con le foto reali dell&#8217;associazione &#8212; inviamele quando vuoi.</div>
-<div class="grid">
-<div class="tile reveal" data-full="assets/disc.jpg"><img src="assets/disc.jpg" alt="Le discipline"></div>
-<div class="tile reveal" data-full="assets/team.jpg"><img src="assets/team.jpg" alt="La squadra"></div>
-<div class="tile reveal" data-full="assets/hero.jpg"><img src="assets/hero.jpg" alt="Stemma su tricolore"></div>
-<div class="tile empty reveal"><span>&#43;</span><small>LA TUA FOTO QUI</small></div>
-<div class="tile empty reveal"><span>&#43;</span><small>LA TUA FOTO QUI</small></div>
-<div class="tile empty reveal"><span>&#43;</span><small>LA TUA FOTO QUI</small></div>
-</div></div></section>
+  <div id="g-loading" class="note">Caricamento galleria&#8230;</div>
+
+  <!-- Vista ALBUM -->
+  <div id="g-albums" style="display:none">
+    <div class="grid" id="g-albums-grid"></div>
+  </div>
+
+  <!-- Vista FOTO di un album -->
+  <div id="g-photos" style="display:none">
+    <button class="btn btn--ghost" id="g-back" style="margin-bottom:26px">&#8592; Tutti gli album</button>
+    <h2 id="g-album-title" style="font-family:'Cinzel',serif;color:var(--amaranto);font-size:clamp(24px,4vw,34px);margin-bottom:24px"></h2>
+    <div class="grid" id="g-photos-grid"></div>
+  </div>
+
+  <div id="g-empty" class="note" style="display:none">La galleria sar&#224; presto online con le foto dell&#8217;associazione. <b>Torna a trovarci!</b></div>
+</div></section>
 <div class="lb" id="lb"><span class="x" id="lbx">&#215;</span><img id="lbimg" src="" alt=""></div></main>
 <footer id="contatti">
   <div class="wrap">
@@ -233,10 +248,78 @@
 </script>
 <script>
 const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
-document.querySelectorAll('.tile[data-full]').forEach(t=>t.addEventListener('click',()=>{lbimg.src=t.dataset.full;lb.classList.add('on')}));
-function close(){lb.classList.remove('on');lbimg.src=''}
-document.getElementById('lbx').addEventListener('click',close);
-lb.addEventListener('click',e=>{if(e.target===lb)close()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+function lbClose(){lb.classList.remove('on');lbimg.src=''}
+document.getElementById('lbx').addEventListener('click',lbClose);
+lb.addEventListener('click',e=>{if(e.target===lb)lbClose()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')lbClose()});
+
+(function(){
+  function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  function imgUrl(chiave){return '/api/locandina/'+encodeURIComponent(chiave);}
+  var vAlbums=document.getElementById('g-albums');
+  var vPhotos=document.getElementById('g-photos');
+  var gridA=document.getElementById('g-albums-grid');
+  var gridP=document.getElementById('g-photos-grid');
+
+  function show(el){el.style.display=''}
+  function hide(el){el.style.display='none'}
+
+  function vistaAlbums(){
+    hide(vPhotos); show(vAlbums);
+    if(history.state&&history.state.album){history.pushState({},'',location.pathname);}
+  }
+
+  function renderAlbums(albums){
+    hide(document.getElementById('g-loading'));
+    if(!albums.length){show(document.getElementById('g-empty'));return;}
+    gridA.innerHTML=albums.map(function(a){
+      if(a.copertina){
+        return '<div class="album-tile" data-id="'+a.id+'">'
+          +'<img src="'+imgUrl(a.copertina)+'" alt="'+esc(a.nome)+'" loading="lazy">'
+          +'<div class="cap"><b>'+esc(a.nome)+'</b><span>'+a.n+' '+(a.n==1?'foto':'foto')+'</span></div></div>';
+      }
+      return '<div class="album-tile nocov" data-id="'+a.id+'"><div class="cap"><b>'+esc(a.nome)+'</b><span>'+a.n+' foto</span></div></div>';
+    }).join('');
+    gridA.querySelectorAll('.album-tile').forEach(function(t){
+      t.addEventListener('click',function(){apriAlbum(t.dataset.id);});
+    });
+    show(vAlbums);
+  }
+
+  function apriAlbum(id){
+    gridP.innerHTML='';
+    document.getElementById('g-album-title').textContent='Caricamento…';
+    hide(vAlbums); show(vPhotos);
+    window.scrollTo({top:0,behavior:'smooth'});
+    history.pushState({album:id},'','?album='+id);
+    fetch('/api/galleria?album='+encodeURIComponent(id)).then(function(r){return r.json();}).then(function(d){
+      document.getElementById('g-album-title').textContent=(d.album&&d.album.nome)||'Album';
+      var foto=d.foto||[];
+      if(!foto.length){gridP.innerHTML='<p style="color:var(--ink-soft)">Questo album non contiene ancora foto.</p>';return;}
+      gridP.innerHTML=foto.map(function(f){
+        return '<div class="tile" data-full="'+imgUrl(f.chiave)+'"><img src="'+imgUrl(f.chiave)+'" alt="foto" loading="lazy"></div>';
+      }).join('');
+      gridP.querySelectorAll('.tile[data-full]').forEach(function(t){
+        t.addEventListener('click',function(){lbimg.src=t.dataset.full;lb.classList.add('on');});
+      });
+    });
+  }
+
+  document.getElementById('g-back').addEventListener('click',vistaAlbums);
+  window.addEventListener('popstate',function(){
+    var p=new URLSearchParams(location.search).get('album');
+    if(p){apriAlbum(p);}else{vistaAlbums();}
+  });
+
+  // avvio: se l'URL ha ?album=ID apro quell'album, altrimenti lista album
+  fetch('/api/galleria').then(function(r){return r.json();}).then(function(d){
+    renderAlbums(d.albums||[]);
+    var p=new URLSearchParams(location.search).get('album');
+    if(p){apriAlbum(p);}
+  }).catch(function(){
+    hide(document.getElementById('g-loading'));
+    show(document.getElementById('g-empty'));
+  });
+})();
 </script>
 </body></html>

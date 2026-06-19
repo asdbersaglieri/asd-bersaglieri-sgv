@@ -65,8 +65,13 @@
   .msg.ok{color:#2c6b34}.msg.err{color:#B81E33}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:4px}
 
-  @media(max-width:600px){.wrap{padding:14px}.formgrid{grid-template-columns:1fr}}
-</style>
+  /* griglia foto galleria nel pannello */
+  .gphotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+  .gphoto{background:#fff;border:1px solid rgba(110,16,35,.16);border-radius:10px;overflow:hidden}
+  .gphoto img{width:100%;height:130px;object-fit:cover;display:block}
+  .gphoto-act{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px}
+
+  @media(max-width:600px){.wrap{padding:14px}.formgrid{grid-template-columns:1fr}}</style>
 </head>
 <body>
 <header>
@@ -78,6 +83,7 @@
   <button class="tab on" data-panel="iscrizioni">Iscrizioni</button>
   <button class="tab" data-panel="eventi">Eventi</button>
   <button class="tab" data-panel="adesioni">Adesioni</button>
+  <button class="tab" data-panel="galleria">Galleria</button>
 </nav>
 
 <div class="wrap">
@@ -171,6 +177,55 @@
     <div id="ad-groups"><div class="state">Caricamento…</div></div>
   </section>
 
+  <!-- ============ GALLERIA ============ -->
+  <section class="panel" id="panel-galleria">
+    <!-- vista elenco album -->
+    <div id="g-albums-view">
+      <div class="formcard">
+        <h2>Nuovo album</h2>
+        <div class="formgrid">
+          <div class="field full">
+            <label for="g-nome">Nome dell'album *</label>
+            <input type="text" id="g-nome" maxlength="80" placeholder="Es. Raduno Regionale 2026">
+          </div>
+        </div>
+        <div class="formactions">
+          <button class="btn" id="g-crea">&#43; Crea album</button>
+          <span class="msg" id="g-msg"></span>
+        </div>
+      </div>
+      <div class="bar">
+        <span class="count" id="g-count"></span>
+        <button class="btn ghost" id="g-refresh">&#8635; Aggiorna</button>
+      </div>
+      <div id="g-list"><div class="state">Caricamento…</div></div>
+    </div>
+
+    <!-- vista dettaglio album -->
+    <div id="g-detail" style="display:none">
+      <div class="bar">
+        <button class="btn ghost" id="g-back">&#8592; Tutti gli album</button>
+        <b id="g-detail-nome" style="font-family:'Cinzel',serif;color:var(--amaranto);font-size:18px"></b>
+      </div>
+      <div class="formcard">
+        <h2>Carica foto</h2>
+        <div class="field full">
+          <input type="file" id="g-files" accept="image/*" multiple>
+          <div class="hint">Puoi selezionare pi&#249; foto insieme. Vengono ridotte automaticamente prima del caricamento.</div>
+        </div>
+        <div class="formactions">
+          <button class="btn" id="g-upload">&#8615; Carica le foto selezionate</button>
+          <span class="msg" id="g-upmsg"></span>
+        </div>
+        <div id="g-progress" style="display:none;margin-top:12px">
+          <div style="background:#EFE8D2;border-radius:6px;overflow:hidden;height:10px"><div id="g-bar" style="height:100%;width:0;background:var(--amaranto);transition:width .2s"></div></div>
+          <div class="hint" id="g-progtext" style="margin-top:6px"></div>
+        </div>
+      </div>
+      <div id="g-photos"><div class="state">Caricamento…</div></div>
+    </div>
+  </section>
+
 </div>
 
 <script>
@@ -185,6 +240,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   $('panel-'+t.dataset.panel).classList.add('on');
   if(t.dataset.panel==='eventi' && !EV_LOADED){loadEventi();}
   if(t.dataset.panel==='adesioni' && !AD_LOADED){loadAdesioni();}
+  if(t.dataset.panel==='galleria' && !G_LOADED){loadAlbums();}
 }));
 
 /* ===================== ISCRIZIONI ===================== */
@@ -410,6 +466,156 @@ async function svuotaEvento(titolo){
     else alert('Eliminazione non riuscita.');
   }catch(e){alert('Eliminazione non riuscita.');}
 }
+
+/* ===================== GALLERIA ===================== */
+let G_LOADED=false, G_CUR=null;  // G_CUR = album aperto {id,nome}
+function imgUrlG(chiave){return '/api/locandina/'+encodeURIComponent(chiave);}
+
+async function loadAlbums(){
+  G_LOADED=true;
+  $('g-list').innerHTML='<div class="state">Caricamento…</div>';
+  try{
+    const res=await fetch('/api/galleria',{headers:{'Accept':'application/json'}});
+    const data=await res.json();
+    const albums=data.albums||[];
+    if(!albums.length){$('g-list').innerHTML='<div class="state">Nessun album. Creane uno qui sopra.</div>';$('g-count').textContent='0 album';return;}
+    $('g-list').innerHTML='<div class="tablewrap"><table style="min-width:auto"><thead><tr><th>Album</th><th>Foto</th><th></th></tr></thead><tbody>'
+      +albums.map(a=>`<tr>
+        <td><b>${esc(a.nome)}</b></td>
+        <td>${a.n}</td>
+        <td style="white-space:nowrap">
+          <button class="btn ghost g-open" data-id="${a.id}" data-nome="${esc(a.nome)}" style="padding:6px 14px;font-size:12px">Apri</button>
+          <button class="del g-del" data-id="${a.id}" data-nome="${esc(a.nome)}" title="Elimina album">&#128465;</button>
+        </td></tr>`).join('')
+      +'</tbody></table></div>';
+    $('g-count').textContent=albums.length+(albums.length===1?' album':' album');
+    $('g-list').querySelectorAll('.g-open').forEach(b=>b.addEventListener('click',()=>apriAlbumPanel(b.dataset.id,b.dataset.nome)));
+    $('g-list').querySelectorAll('.g-del').forEach(b=>b.addEventListener('click',()=>delAlbum(b.dataset.id,b.dataset.nome)));
+  }catch(e){$('g-list').innerHTML='<div class="state">Errore nel caricamento.</div>';}
+}
+$('g-crea').addEventListener('click',async function(){
+  const msg=$('g-msg');msg.textContent='';
+  const nome=$('g-nome').value.trim();
+  if(!nome){msg.className='msg err';msg.textContent='Inserisci un nome.';return;}
+  this.disabled=true;
+  try{
+    const res=await fetch('/api/admin/gestione-album',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'add',nome:nome})});
+    const d=await res.json();
+    if(d.success){msg.className='msg ok';msg.textContent='Album creato.';$('g-nome').value='';loadAlbums();setTimeout(()=>{msg.textContent='';},2000);}
+    else{msg.className='msg err';msg.textContent=d.message||'Creazione non riuscita.';}
+  }catch(e){msg.className='msg err';msg.textContent='Creazione non riuscita.';}
+  this.disabled=false;
+});
+$('g-refresh').addEventListener('click',loadAlbums);
+async function delAlbum(id,nome){
+  if(!confirm('Eliminare l\'album "'+nome+'" e TUTTE le sue foto? L\'azione è definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/gestione-album',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id:Number(id)})});
+    const d=await res.json();
+    if(d.success){loadAlbums();}else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+
+function apriAlbumPanel(id,nome){
+  G_CUR={id:Number(id),nome:nome};
+  $('g-detail-nome').textContent=nome;
+  $('g-albums-view').style.display='none';
+  $('g-detail').style.display='';
+  $('g-files').value='';$('g-upmsg').textContent='';
+  loadFoto();
+}
+$('g-back').addEventListener('click',function(){
+  $('g-detail').style.display='none';
+  $('g-albums-view').style.display='';
+  G_CUR=null;
+  loadAlbums();
+});
+async function loadFoto(){
+  if(!G_CUR)return;
+  $('g-photos').innerHTML='<div class="state">Caricamento…</div>';
+  try{
+    const res=await fetch('/api/galleria?album='+encodeURIComponent(G_CUR.id),{headers:{'Accept':'application/json'}});
+    const data=await res.json();
+    const foto=data.foto||[];
+    if(!foto.length){$('g-photos').innerHTML='<div class="state">Nessuna foto in questo album. Caricane qui sopra.</div>';return;}
+    $('g-photos').innerHTML='<div class="gphotos">'+foto.map(f=>`
+      <div class="gphoto">
+        <img src="${imgUrlG(f.chiave)}" alt="">
+        <div class="gphoto-act">
+          <button class="btn ghost g-cover" data-chiave="${esc(f.chiave)}" style="padding:5px 10px;font-size:11px">Copertina</button>
+          <button class="del g-fdel" data-id="${f.id}" title="Elimina foto">&#128465;</button>
+        </div>
+      </div>`).join('')+'</div>';
+    $('g-photos').querySelectorAll('.g-fdel').forEach(b=>b.addEventListener('click',()=>delFoto(b.dataset.id)));
+    $('g-photos').querySelectorAll('.g-cover').forEach(b=>b.addEventListener('click',()=>setCover(b.dataset.chiave)));
+  }catch(e){$('g-photos').innerHTML='<div class="state">Errore nel caricamento.</div>';}
+}
+async function delFoto(id){
+  if(!confirm('Eliminare questa foto?'))return;
+  try{
+    const res=await fetch('/api/admin/gestione-foto',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id:Number(id)})});
+    const d=await res.json();
+    if(d.success){loadFoto();}else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+async function setCover(chiave){
+  if(!G_CUR)return;
+  try{
+    const res=await fetch('/api/admin/gestione-album',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'cover',id:G_CUR.id,chiave:chiave})});
+    const d=await res.json();
+    if(d.success){$('g-upmsg').className='msg ok';$('g-upmsg').textContent='Copertina aggiornata.';setTimeout(()=>{$('g-upmsg').textContent='';},2000);}
+  }catch(e){}
+}
+
+// Ridimensionamento foto nel browser (lato lungo max 1600px) -> JPEG
+function ridimensiona(file){
+  return new Promise(function(resolve){
+    var done=function(bitmap){
+      var w=bitmap.width,h=bitmap.height,MAX=1600;
+      if(w>h && w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      else if(h>=w && h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(bitmap,0,0,w,h);
+      c.toBlob(function(blob){resolve(blob||file);},'image/jpeg',0.85);
+    };
+    if(window.createImageBitmap){
+      createImageBitmap(file,{imageOrientation:'from-image'}).then(done).catch(function(){resolve(file);});
+    }else{
+      var img=new Image();img.onload=function(){done(img);};img.onerror=function(){resolve(file);};
+      img.src=URL.createObjectURL(file);
+    }
+  });
+}
+$('g-upload').addEventListener('click',async function(){
+  if(!G_CUR)return;
+  var files=Array.from($('g-files').files||[]);
+  var msg=$('g-upmsg');msg.textContent='';msg.className='msg';
+  if(!files.length){msg.className='msg err';msg.textContent='Seleziona almeno una foto.';return;}
+  this.disabled=true;
+  $('g-progress').style.display='';
+  var bar=$('g-bar'),ptext=$('g-progtext');
+  var ok=0,fail=0;
+  for(var i=0;i<files.length;i++){
+    ptext.textContent='Caricamento '+(i+1)+' di '+files.length+'…';
+    try{
+      var blob=await ridimensiona(files[i]);
+      var fd=new FormData();
+      fd.append('album_id',String(G_CUR.id));
+      fd.append('foto',blob,'foto.jpg');
+      var res=await fetch('/api/admin/gestione-foto',{method:'POST',body:fd});
+      var d=await res.json();
+      if(d.success)ok++;else fail++;
+    }catch(e){fail++;}
+    bar.style.width=Math.round((i+1)/files.length*100)+'%';
+  }
+  ptext.textContent='Completato: '+ok+' caricate'+(fail?', '+fail+' non riuscite':'')+'.';
+  msg.className=fail?'msg err':'msg ok';
+  msg.textContent=fail?(ok+' foto caricate, '+fail+' non riuscite.'):(ok+' foto caricate.');
+  $('g-files').value='';
+  this.disabled=false;
+  loadFoto();
+  setTimeout(function(){$('g-progress').style.display='none';bar.style.width='0';},1500);
+});
 </script>
 </body>
 </html>
