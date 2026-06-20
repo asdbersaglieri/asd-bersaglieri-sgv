@@ -84,6 +84,7 @@
   <button class="tab" data-panel="eventi">Eventi</button>
   <button class="tab" data-panel="adesioni">Adesioni</button>
   <button class="tab" data-panel="galleria">Galleria</button>
+  <button class="tab" data-panel="corsi">Corsi</button>
 </nav>
 
 <div class="wrap">
@@ -226,6 +227,22 @@
     </div>
   </section>
 
+  <!-- ============ CORSI ============ -->
+  <section class="panel" id="panel-corsi">
+    <div class="formcard">
+      <h2>Dettagli dei corsi</h2>
+      <p class="hint" style="margin:-6px 0 16px">Questi valori compaiono sulle pagine pubbliche dei corsi. Lascia un campo vuoto per mostrare &laquo;[da definire]&raquo;.</p>
+      <div id="c-edit"><div class="state">Caricamento&#8230;</div></div>
+    </div>
+
+    <div class="bar" style="margin-top:26px">
+      <span class="count" id="ci-count"></span>
+      <button class="btn ghost" id="ci-refresh">&#8635; Aggiorna</button>
+      <button class="btn" id="ci-csv">&#8615; Scarica CSV</button>
+    </div>
+    <div id="ci-groups"><div class="state">Caricamento&#8230;</div></div>
+  </section>
+
 </div>
 
 <script>
@@ -241,6 +258,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   if(t.dataset.panel==='eventi' && !EV_LOADED){loadEventi();}
   if(t.dataset.panel==='adesioni' && !AD_LOADED){loadAdesioni();}
   if(t.dataset.panel==='galleria' && !G_LOADED){loadAlbums();}
+  if(t.dataset.panel==='corsi' && !C_LOADED){loadCorsiPanel();}
 }));
 
 /* ===================== ISCRIZIONI ===================== */
@@ -616,6 +634,127 @@ $('g-upload').addEventListener('click',async function(){
   loadFoto();
   setTimeout(function(){$('g-progress').style.display='none';bar.style.width='0';},1500);
 });
+
+/* ===================== CORSI ===================== */
+let C_LOADED=false, CORSI=[], CI=[];
+const C_CAMPI=[['durata','Durata'],['sede','Sede'],['eta_minima','Et\u00e0 minima'],['requisiti','Requisiti'],['quota','Quota']];
+
+function renderCorsiEdit(){
+  const box=$('c-edit');
+  if(!CORSI.length){box.innerHTML='<div class="state">Nessun corso disponibile.</div>';return;}
+  box.innerHTML=CORSI.map(c=>`
+    <div class="formcard" style="margin-bottom:16px">
+      <h3 style="font-family:'Cinzel',serif;color:var(--amaranto);margin:0 0 14px;font-size:18px">${esc(c.titolo)}</h3>
+      <div class="formgrid">
+        ${C_CAMPI.map(([k,lab])=>`
+          <div class="field${(k==='requisiti'||k==='sede')?' full':''}">
+            <label>${lab}</label>
+            <input type="text" data-slug="${esc(c.slug)}" data-k="${k}" maxlength="160" value="${esc(c[k]||'')}" placeholder="[da definire]">
+          </div>`).join('')}
+      </div>
+      <div class="formactions">
+        <button class="btn c-save" data-slug="${esc(c.slug)}">Salva</button>
+        <span class="msg" id="c-msg-${esc(c.slug)}"></span>
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('.c-save').forEach(b=>b.addEventListener('click',()=>saveCorso(b.dataset.slug)));
+}
+async function saveCorso(slug){
+  const msg=$('c-msg-'+slug); if(msg){msg.className='msg';msg.textContent='';}
+  const payload={slug:slug};
+  document.querySelectorAll('#c-edit input[data-slug="'+slug+'"]').forEach(inp=>{payload[inp.dataset.k]=inp.value.trim();});
+  const btns=[...document.querySelectorAll('.c-save')].filter(b=>b.dataset.slug===slug);
+  btns.forEach(b=>b.disabled=true);
+  try{
+    const res=await fetch('/api/admin/corsi-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await res.json();
+    if(d.success){
+      if(msg){msg.className='msg ok';msg.textContent='Salvato.';}
+      const i=CORSI.findIndex(x=>x.slug===slug); if(i>=0)Object.assign(CORSI[i],payload);
+      if(msg)setTimeout(()=>{msg.textContent='';},2200);
+    }else{ if(msg){msg.className='msg err';msg.textContent=d.message||'Salvataggio non riuscito.';} }
+  }catch(e){ if(msg){msg.className='msg err';msg.textContent='Salvataggio non riuscito.';} }
+  btns.forEach(b=>b.disabled=false);
+}
+
+function renderIscrCorsi(){
+  const box=$('ci-groups');
+  if(!CI.length){box.innerHTML='<div class="state">Nessuna iscrizione ai corsi finora.</div>';$('ci-count').textContent='0 iscrizioni';return;}
+  const gruppi={};
+  CI.forEach(a=>{const k=(a.corso||'(corso non indicato)');(gruppi[k]=gruppi[k]||[]).push(a);});
+  let html='';
+  Object.keys(gruppi).sort().forEach(corso=>{
+    const lista=gruppi[corso];
+    html+=`<div class="formcard" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;background:#FBF6E6;border-bottom:1px solid rgba(110,16,35,.12)">
+        <b style="font-family:'Cinzel',serif;color:var(--amaranto);font-size:17px">${esc(corso)}</b>
+        <span style="display:flex;align-items:center;gap:12px">
+          <span class="tag pub" style="font-size:13px">${lista.length} ${lista.length===1?'iscritto':'iscritti'}</span>
+          <button class="btn ghost ci-clear" style="padding:6px 12px;font-size:12px" data-corso="${esc(corso)}">Svuota tutti</button>
+        </span>
+      </div>
+      <table style="min-width:auto"><thead><tr><th>Data e ora</th><th>Nome</th><th>Cognome</th><th>Email</th><th>Telefono</th><th></th></tr></thead><tbody>`;
+    lista.forEach(a=>{
+      html+=`<tr>
+        <td>${fmtDataOra(a.created_at)}</td>
+        <td>${esc(a.nome)}</td><td>${esc(a.cognome)}</td>
+        <td>${esc(a.email)}</td><td>${esc(a.tel)}</td>
+        <td><button class="del ci-del" title="Elimina" data-id="${a.id}">&#128465;</button></td>
+      </tr>`;
+    });
+    html+='</tbody></table></div>';
+  });
+  box.innerHTML=html;
+  box.querySelectorAll('.ci-del').forEach(b=>b.addEventListener('click',()=>delIscrCorso(b.dataset.id)));
+  box.querySelectorAll('.ci-clear').forEach(b=>b.addEventListener('click',()=>svuotaCorso(b.dataset.corso)));
+  $('ci-count').textContent=CI.length+(CI.length===1?' iscrizione totale':' iscrizioni totali');
+}
+async function loadCorsiPanel(){
+  C_LOADED=true;
+  $('c-edit').innerHTML='<div class="state">Caricamento\u2026</div>';
+  $('ci-groups').innerHTML='<div class="state">Caricamento\u2026</div>';
+  try{
+    const r1=await fetch('/api/corsi',{headers:{'Accept':'application/json'}});
+    const d1=await r1.json(); CORSI=d1.items||[]; renderCorsiEdit();
+  }catch(e){$('c-edit').innerHTML='<div class="state">Errore nel caricamento dei corsi.</div>';}
+  loadIscrCorsi();
+}
+async function loadIscrCorsi(){
+  try{
+    const res=await fetch('/api/admin/iscrizioni-corsi-list',{headers:{'Accept':'application/json'}});
+    const data=await res.json(); CI=data.items||[]; renderIscrCorsi();
+  }catch(e){$('ci-groups').innerHTML='<div class="state">Errore nel caricamento.</div>';}
+}
+function ciCSV(){
+  const cols=['created_at','corso','nome','cognome','email','tel','consenso_privacy'];
+  const head=['Data e ora','Corso','Nome','Cognome','Email','Telefono','Consenso'].join(';');
+  const lines=CI.map(r=>cols.map(c=>'"'+String(r[c]==null?'':r[c]).replace(/"/g,'""')+'"').join(';'));
+  const csv='\ufeff'+[head,...lines].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='iscrizioni-corsi.csv';a.click();
+}
+async function delIscrCorso(id){
+  if(!confirm('Eliminare questa iscrizione? L\'azione \u00e8 definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/iscrizioni-corsi-delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:Number(id)})});
+    const d=await res.json();
+    if(d.success){CI=CI.filter(a=>String(a.id)!==String(id));renderIscrCorsi();}
+    else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+async function svuotaCorso(corso){
+  if(!confirm('Eliminare TUTTE le iscrizioni di "'+corso+'"? L\'azione \u00e8 definitiva.'))return;
+  try{
+    const res=await fetch('/api/admin/iscrizioni-corsi-delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({corso:corso})});
+    const d=await res.json();
+    if(d.success){CI=CI.filter(a=>(a.corso||'(corso non indicato)')!==corso);renderIscrCorsi();}
+    else alert('Eliminazione non riuscita.');
+  }catch(e){alert('Eliminazione non riuscita.');}
+}
+$('ci-refresh').addEventListener('click',loadIscrCorsi);
+$('ci-csv').addEventListener('click',ciCSV);
+
 </script>
 </body>
 </html>
