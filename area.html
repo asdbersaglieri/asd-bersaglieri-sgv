@@ -656,8 +656,59 @@ function renderCorsiEdit(){
         <button class="btn c-save" data-slug="${esc(c.slug)}">Salva</button>
         <span class="msg" id="c-msg-${esc(c.slug)}"></span>
       </div>
+      <div style="margin-top:16px;border-top:1px dashed rgba(110,16,35,.25);padding-top:14px">
+        <label style="font-family:'Cinzel',serif;color:var(--amaranto);font-weight:600;font-size:13px;display:block;margin-bottom:8px">Video di presentazione</label>
+        <div style="margin-bottom:8px">${c.video?'<span class="tag pub">Video presente</span>':'<span class="tag draft">Nessun video</span>'}</div>
+        <input type="file" id="vid-file-${esc(c.slug)}" accept="video/mp4,video/*">
+        <div class="hint">MP4 consigliato, breve e compresso (max ~95 MB).</div>
+        <div class="formactions" style="margin-top:10px">
+          <button class="btn vid-up" data-slug="${esc(c.slug)}">&#8593; Carica video</button>
+          ${c.video?`<button class="btn ghost vid-del" data-slug="${esc(c.slug)}">Rimuovi video</button>`:''}
+          <span class="msg" id="vid-msg-${esc(c.slug)}"></span>
+        </div>
+        <div id="vid-prog-${esc(c.slug)}" style="display:none;margin-top:10px">
+          <div style="background:#EFE8D2;border-radius:6px;overflow:hidden;height:10px"><div id="vid-bar-${esc(c.slug)}" style="height:100%;width:0;background:var(--amaranto);transition:width .2s"></div></div>
+          <div class="hint" id="vid-ptext-${esc(c.slug)}" style="margin-top:6px"></div>
+        </div>
+      </div>
     </div>`).join('');
   box.querySelectorAll('.c-save').forEach(b=>b.addEventListener('click',()=>saveCorso(b.dataset.slug)));
+  box.querySelectorAll('.vid-up').forEach(b=>b.addEventListener('click',()=>uploadVideo(b.dataset.slug)));
+  box.querySelectorAll('.vid-del').forEach(b=>b.addEventListener('click',()=>deleteVideo(b.dataset.slug)));
+}
+function uploadVideo(slug){
+  var inp=$('vid-file-'+slug); var f=(inp&&inp.files)?inp.files[0]:null;
+  var msg=$('vid-msg-'+slug); if(msg){msg.className='msg';msg.textContent='';}
+  if(!f){ if(msg){msg.className='msg err';msg.textContent='Seleziona un file video.';} return; }
+  if(f.size>95*1024*1024){ if(msg){msg.className='msg err';msg.textContent='Video troppo grande (max ~95 MB). Comprimilo prima.';} return; }
+  var prog=$('vid-prog-'+slug),bar=$('vid-bar-'+slug),pt=$('vid-ptext-'+slug);
+  if(prog)prog.style.display=''; if(bar)bar.style.width='0';
+  var fd=new FormData(); fd.append('slug',slug); fd.append('video',f,'video.mp4');
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/admin/corsi-video',true);
+  xhr.upload.onprogress=function(e){ if(e.lengthComputable){var p=Math.round(e.loaded/e.total*100); if(bar)bar.style.width=p+'%'; if(pt)pt.textContent='Caricamento '+p+'%';} };
+  xhr.onload=function(){
+    var d={}; try{d=JSON.parse(xhr.responseText);}catch(e){}
+    if(xhr.status===200&&d.success){
+      if(msg){msg.className='msg ok';msg.textContent='Video caricato.';}
+      var i=CORSI.findIndex(function(x){return x.slug===slug;}); if(i>=0)CORSI[i].video=d.chiave;
+      if(pt)pt.textContent='Completato.';
+      setTimeout(renderCorsiEdit,900);
+    }else{
+      if(msg){msg.className='msg err';msg.textContent=(d&&d.message)||'Caricamento non riuscito.';}
+      if(prog)prog.style.display='none';
+    }
+  };
+  xhr.onerror=function(){ if(msg){msg.className='msg err';msg.textContent='Caricamento non riuscito (connessione).';} if(prog)prog.style.display='none'; };
+  xhr.send(fd);
+}
+function deleteVideo(slug){
+  if(!confirm('Rimuovere il video di questo corso? L\'azione \u00e8 definitiva.'))return;
+  fetch('/api/admin/corsi-video',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',slug:slug})})
+    .then(function(r){return r.json();}).then(function(d){
+      if(d.success){var i=CORSI.findIndex(function(x){return x.slug===slug;}); if(i>=0)CORSI[i].video=''; renderCorsiEdit();}
+      else alert('Rimozione non riuscita.');
+    }).catch(function(){alert('Rimozione non riuscita.');});
 }
 async function saveCorso(slug){
   const msg=$('c-msg-'+slug); if(msg){msg.className='msg';msg.textContent='';}

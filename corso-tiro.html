@@ -324,6 +324,10 @@
       var v=c[el.getAttribute('data-f')];
       if(v&&String(v).trim()){el.textContent=v;el.classList.remove('ph');}
     });
+    if(c.video){
+      var vw=document.querySelector('.videowrap');
+      if(vw) vw.innerHTML='<video controls preload="metadata" playsinline style="width:100%;height:100%;display:block"><source src="/api/locandina/'+encodeURIComponent(c.video)+'" type="video/mp4">Il tuo browser non supporta la riproduzione del video.</video>';
+    }
   }).catch(function(){});
 })();
 </script>
