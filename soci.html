@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ASD Bersaglieri SGV — Soci</title>
+<meta name="description" content="La bacheca dei soci A.S.D. Bersaglieri SGV: prossimi eventi, corsi e collegamenti rapidi.">
+
+<link rel="manifest" href="/manifest-soci.json">
+<meta name="theme-color" content="#8E1B2E">
+
+<!-- iOS / Safari -->
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon-soci.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Soci">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cremisi:#8E1B2E;
+    --cremisi-bright:#B81E33;
+    --oro:#C9A24B;
+    --oro-bright:#E6C879;
+    --inchiostro:#16110D;
+    --crema:#F4ECDD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--crema);
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgba(142,27,46,.55) 0%, rgba(142,27,46,0) 55%),
+      var(--inchiostro);
+    -webkit-font-smoothing:antialiased;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:clamp(26px,5vh,46px) 20px calc(clamp(20px,4vh,40px) + env(safe-area-inset-bottom));
+  }
+  .wrap{
+    width:100%;
+    max-width:460px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+  }
+  .stemma{
+    width:clamp(84px,22vw,112px);
+    height:auto;
+    filter:drop-shadow(0 8px 26px rgba(0,0,0,.5));
+  }
+  .eyebrow{
+    font-weight:600;font-size:12px;letter-spacing:.4em;text-transform:uppercase;
+    color:var(--oro);padding-left:.4em;text-align:center;
+  }
+  .titolo{
+    font-family:'Cinzel',serif;font-weight:700;
+    font-size:clamp(26px,7vw,36px);line-height:1.02;color:#fff;
+    text-shadow:0 2px 18px rgba(0,0,0,.5);text-align:center;
+  }
+  .sfregio{width:170px;height:14px;margin:2px 0 4px}
+  .sfregio path{fill:none;stroke-width:7;stroke-linecap:round}
+  .sfregio .s-verde{stroke:#1F9355}
+  .sfregio .s-bianco{stroke:var(--crema)}
+  .sfregio .s-rosso{stroke:var(--cremisi-bright)}
+
+  /* ---- sezioni bacheca ---- */
+  .sec{width:100%;margin-top:6px}
+  .sec-h{
+    display:flex;align-items:center;gap:8px;
+    font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:.04em;
+    color:var(--oro-bright);margin:0 2px 10px;
+  }
+  .sec-h .dot{width:7px;height:7px;border-radius:50%;background:var(--oro);flex:0 0 auto}
+  .sec-h .all{margin-left:auto;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.02em;color:var(--oro);text-decoration:none;opacity:.9}
+  .sec-h .all:hover{opacity:1;text-decoration:underline}
+
+  .cards{display:flex;flex-direction:column;gap:10px}
+
+  /* card evento */
+  .ev{
+    display:flex;align-items:stretch;gap:14px;text-decoration:none;color:var(--crema);
+    background:rgba(244,236,221,.05);border:1.5px solid rgba(201,162,75,.4);
+    border-radius:14px;padding:13px 15px;
+    transition:transform .15s ease,background .25s ease,border-color .25s ease;
+  }
+  .ev:active{transform:scale(.985)}
+  .ev:hover{background:rgba(201,162,75,.12);border-color:var(--oro)}
+  .ev .cal{
+    flex:0 0 auto;width:48px;border-radius:10px;overflow:hidden;
+    background:var(--cremisi);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:6px 0;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,.35);
+  }
+  .ev .cal .m{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--oro-bright);font-weight:600}
+  .ev .cal .d{font-family:'Cinzel',serif;font-weight:700;font-size:22px;color:#fff;margin-top:2px}
+  .ev .txt{display:flex;flex-direction:column;gap:3px;min-width:0;justify-content:center}
+  .ev .t{font-family:'Cinzel',serif;font-weight:700;font-size:16px;line-height:1.12;color:#fff}
+  .ev .meta{font-size:12.5px;line-height:1.3;color:rgba(244,236,221,.8)}
+  .ev .meta b{color:var(--oro-bright);font-weight:600}
+
+  /* card corso */
+  .co{
+    display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--crema);
+    background:rgba(244,236,221,.05);border:1.5px solid rgba(201,162,75,.4);
+    border-radius:14px;padding:14px 15px;
+    transition:transform .15s ease,background .25s ease,border-color .25s ease;
+  }
+  .co:active{transform:scale(.985)}
+  .co:hover{background:rgba(201,162,75,.12);border-color:var(--oro)}
+  .co .ico{flex:0 0 auto;width:30px;height:30px;stroke:var(--oro)}
+  .co .t{flex:1 1 auto;font-family:'Cinzel',serif;font-weight:700;font-size:16px;line-height:1.1;color:#fff;min-width:0}
+  .co .go{flex:0 0 auto;width:20px;height:20px;stroke:var(--oro)}
+
+  .empty{font-size:13.5px;color:rgba(244,236,221,.62);padding:6px 4px;text-align:left}
+  .skel{height:62px;border-radius:14px;background:rgba(244,236,221,.06);
+    border:1.5px solid rgba(201,162,75,.2);animation:pulse 1.3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:.9}}
+
+  /* ---- collegamenti rapidi ---- */
+  .quick{
+    width:100%;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:8px;
+  }
+  .qt{
+    display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;
+    text-decoration:none;color:var(--crema);
+    background:rgba(244,236,221,.05);border:1.5px solid rgba(201,162,75,.45);
+    border-radius:14px;padding:17px 10px;
+    transition:transform .15s ease,background .25s ease,border-color .25s ease;
+  }
+  .qt:active{transform:scale(.97)}
+  .qt:hover{background:rgba(201,162,75,.12);border-color:var(--oro)}
+  .qt:focus-visible{outline:3px solid var(--oro-bright);outline-offset:3px}
+  .qt .ico{width:26px;height:26px;stroke:var(--oro)}
+  .qt .lab{font-family:'Cinzel',serif;font-weight:700;font-size:14.5px;letter-spacing:.02em}
+  .qt--gold{background:var(--oro);color:var(--inchiostro);border-color:var(--oro-bright);
+    box-shadow:0 8px 22px rgba(0,0,0,.38)}
+  .qt--gold .ico{stroke:var(--inchiostro)}
+  .qt--gold:hover{background:var(--oro-bright)}
+  .qt--wide{grid-column:1 / -1;flex-direction:row;justify-content:center;gap:12px;padding:15px 10px}
+
+  .install{min-height:30px;margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+  #installBtn{
+    display:none;align-items:center;gap:.6em;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;letter-spacing:.04em;
+    color:var(--crema);background:transparent;
+    border:1.5px solid rgba(201,162,75,.6);border-radius:999px;
+    padding:11px 22px;cursor:pointer;
+    transition:background .25s ease,border-color .25s ease;
+  }
+  #installBtn:hover{background:rgba(201,162,75,.14);border-color:var(--oro)}
+  #installBtn .ico{width:18px;height:18px;stroke:var(--oro)}
+  #iosHint{display:none;font-size:13px;line-height:1.45;color:rgba(244,236,221,.8);max-width:30ch;text-align:center}
+  #iosHint b{color:var(--oro-bright);font-weight:600}
+
+  footer{margin-top:16px;font-size:11px;letter-spacing:.06em;color:rgba(244,236,221,.45);text-align:center}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <img class="stemma" src="/assets/logo.png" alt="Stemma A.S.D. Bersaglieri SGV" width="640" height="737">
+    <p class="eyebrow">Bacheca soci</p>
+    <h1 class="titolo">Bersaglieri SGV</h1>
+    <svg class="sfregio" viewBox="0 0 240 18" aria-hidden="true">
+      <path class="s-verde"  d="M6 11 C 50 4, 90 14, 118 9"/>
+      <path class="s-bianco" d="M60 10 C 100 3, 140 13, 178 8"/>
+      <path class="s-rosso"  d="M120 11 C 160 4, 200 14, 234 9"/>
+    </svg>
+
+    <!-- PROSSIMI EVENTI -->
+    <section class="sec" aria-labelledby="h-eventi">
+      <h2 class="sec-h" id="h-eventi"><span class="dot"></span>Prossimi eventi<a class="all" href="eventi.html">Tutti</a></h2>
+      <div class="cards" id="eventiList">
+        <div class="skel"></div><div class="skel"></div>
+      </div>
+    </section>
+
+    <!-- CORSI -->
+    <section class="sec" aria-labelledby="h-corsi">
+      <h2 class="sec-h" id="h-corsi"><span class="dot"></span>I nostri corsi<a class="all" href="corsi.html">Tutti</a></h2>
+      <div class="cards" id="corsiList">
+        <div class="skel"></div>
+      </div>
+    </section>
+
+    <!-- COLLEGAMENTI RAPIDI -->
+    <nav class="quick" aria-label="Collegamenti rapidi">
+      <a class="qt qt--gold" href="home.html">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>
+        </svg><span class="lab">Sito</span>
+      </a>
+      <a class="qt" href="eventi.html">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/>
+        </svg><span class="lab">Eventi</span>
+      </a>
+      <a class="qt" href="corsi.html">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/>
+        </svg><span class="lab">Corsi</span>
+      </a>
+      <a class="qt" href="galleria.html">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4.5 17 4.5-4 3.5 3 3-2.5 4 3.5"/>
+        </svg><span class="lab">Galleria</span>
+      </a>
+      <a class="qt qt--wide" href="home.html#contatti">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 5.5L19.5 7"/>
+        </svg><span class="lab">Contatti / Scrivici</span>
+      </a>
+    </nav>
+
+    <div class="install">
+      <button id="installBtn" type="button">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>
+        </svg>
+        Installa l'app sul telefono
+      </button>
+      <p id="iosHint">Per installarla: tocca <b>Condividi</b> in basso, poi <b>«Aggiungi a Home»</b>.</p>
+    </div>
+
+    <footer>A.S.D. Bersaglieri SGV · San Giovanni Valdarno</footer>
+  </main>
+
+<script>
+  /* ---------- BACHECA: contenuti dal vivo ---------- */
+  var MESI = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function todayStr(){
+    var n=new Date(), m=String(n.getMonth()+1).padStart(2,'0'), d=String(n.getDate()).padStart(2,'0');
+    return n.getFullYear()+'-'+m+'-'+d;
+  }
+  function parseGiorno(iso){
+    // iso atteso "YYYY-MM-DD"; ritorna {d,m} o null
+    if(!iso) return null;
+    var p=String(iso).slice(0,10).split('-');
+    if(p.length<3) return null;
+    var gg=parseInt(p[2],10), mm=parseInt(p[1],10);
+    if(isNaN(gg)||isNaN(mm)) return null;
+    return {d:gg, m:MESI[(mm-1+12)%12]};
+  }
+
+  // PROSSIMI EVENTI
+  (function(){
+    var box=document.getElementById('eventiList');
+    fetch('/api/eventi',{headers:{'Accept':'application/json'}})
+      .then(function(r){return r.ok?r.json():{items:[]};})
+      .then(function(data){
+        var oggi=todayStr();
+        var items=(data&&data.items)?data.items:[];
+        var futuri=items.filter(function(e){return (e.data_evento||'') >= oggi;}).slice(0,4);
+        if(futuri.length===0){
+          box.innerHTML='<p class="empty">Nessun evento in programma al momento. Torna a trovarci!</p>';
+          return;
+        }
+        box.innerHTML=futuri.map(function(e){
+          var g=parseGiorno(e.data_evento);
+          var cal=g?('<span class="cal"><span class="m">'+g.m+'</span><span class="d">'+g.d+'</span></span>'):'';
+          var meta=[];
+          if(e.ora) meta.push(esc(e.ora));
+          if(e.luogo) meta.push('<b>'+esc(e.luogo)+'</b>');
+          return '<a class="ev" href="eventi.html">'+cal+
+            '<span class="txt"><span class="t">'+esc(e.titolo||'Evento')+'</span>'+
+            (meta.length?'<span class="meta">'+meta.join(' · ')+'</span>':'')+
+            '</span></a>';
+        }).join('');
+      })
+      .catch(function(){
+        box.innerHTML='<p class="empty">Eventi non disponibili in questo momento.</p>';
+      });
+  })();
+
+  // CORSI
+  (function(){
+    var box=document.getElementById('corsiList');
+    fetch('/api/corsi',{headers:{'Accept':'application/json'}})
+      .then(function(r){return r.ok?r.json():{items:[]};})
+      .then(function(data){
+        var items=(data&&data.items)?data.items:[];
+        if(items.length===0){
+          box.innerHTML='<p class="empty">Corsi in aggiornamento.</p>';
+          return;
+        }
+        box.innerHTML=items.map(function(c){
+          var href=c.slug?(esc(c.slug)+'.html'):'corsi.html';
+          return '<a class="co" href="'+href+'">'+
+            '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="0.7" fill="currentColor"/></svg>'+
+            '<span class="t">'+esc(c.titolo||'Corso')+'</span>'+
+            '<svg class="go" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>'+
+            '</a>';
+        }).join('');
+      })
+      .catch(function(){
+        box.innerHTML='<p class="empty">Corsi non disponibili in questo momento.</p>';
+      });
+  })();
+
+  /* ---------- Installazione PWA (invariata) ---------- */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+  var installBtn = document.getElementById('installBtn');
+  var iosHint = document.getElementById('iosHint');
+  var deferredPrompt = null;
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!isStandalone) installBtn.style.display = 'inline-flex';
+  });
+  installBtn.addEventListener('click', function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.finally(function () {
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  });
+  window.addEventListener('appinstalled', function () {
+    installBtn.style.display = 'none';
+    iosHint.style.display = 'none';
+  });
+  if (isIOS && !isStandalone) {
+    iosHint.style.display = 'block';
+  }
+</script>
+</body>
+</html>

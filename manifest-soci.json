@@ -1,0 +1,33 @@
+{
+  "name": "ASD Bersaglieri SGV — Soci",
+  "short_name": "Soci",
+  "description": "Bacheca dei soci A.S.D. Bersaglieri SGV: prossimi eventi, corsi e collegamenti rapidi.",
+  "lang": "it",
+  "dir": "ltr",
+  "id": "/soci.html",
+  "start_url": "/soci.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#16110D",
+  "theme_color": "#8E1B2E",
+  "icons": [
+    { "src": "/assets/icon-soci-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-soci-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-soci-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Eventi",
+      "short_name": "Eventi",
+      "url": "/eventi.html",
+      "icons": [{ "src": "/assets/icon-soci-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Corsi",
+      "short_name": "Corsi",
+      "url": "/corsi.html",
+      "icons": [{ "src": "/assets/icon-soci-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
