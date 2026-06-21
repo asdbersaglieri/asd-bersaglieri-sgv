@@ -3,17 +3,23 @@
    Tutto il resto del sito (home, eventi, galleria, /api/*, area riservata,
    invii email a Web3Forms) NON viene toccato: passa in rete come sempre. */
 
-const CACHE = 'bersaglieri-hub-v1';
+const CACHE = 'bersaglieri-hub-v2';
 
-// File che compongono l'hub: precaricati per farlo aprire anche offline.
+// File che compongono le due app (consiglio + soci): precaricati per aprirle anche offline.
 const SHELL = [
   '/app.html',
   '/manifest.json',
+  '/soci.html',
+  '/manifest-soci.json',
   '/assets/logo.png',
   '/assets/icon-192.png',
   '/assets/icon-512.png',
   '/assets/icon-maskable-512.png',
-  '/assets/apple-touch-icon.png'
+  '/assets/apple-touch-icon.png',
+  '/assets/icon-soci-192.png',
+  '/assets/icon-soci-512.png',
+  '/assets/icon-soci-maskable-512.png',
+  '/assets/apple-touch-icon-soci.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -45,16 +51,17 @@ self.addEventListener('fetch', (event) => {
 
   const path = url.pathname;
 
-  // L'hub (app.html): prima la rete, la cache solo come riserva se offline.
-  if (req.mode === 'navigate' && path === '/app.html') {
+  // Le app (app.html = consiglio, soci.html = bacheca soci): prima la rete,
+  // la cache solo come riserva se offline.
+  if (req.mode === 'navigate' && (path === '/app.html' || path === '/soci.html')) {
     event.respondWith(
       fetch(req)
         .then((res) => {
           const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put('/app.html', copy));
+          caches.open(CACHE).then((c) => c.put(path, copy));
           return res;
         })
-        .catch(() => caches.match('/app.html'))
+        .catch(() => caches.match(path))
     );
     return;
   }
