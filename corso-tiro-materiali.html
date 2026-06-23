@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Materiali del corso &#8212; riservati ai partecipanti &#8212; ASD Bersaglieri SGV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#E0C982; --crema2:#D7BC6F;
+    --amaranto:#6E1023; --amaranto-deep:#4E121A;
+    --oro:#C2974A; --oro-bright:#E0BE6E;
+    --ink:#241410; --ink-soft:rgba(36,20,16,.74);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:auto}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--crema);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+  img{display:block;max-width:100%}
+  .wrap{width:100%;max-width:1140px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+
+  .nav{position:sticky;top:0;z-index:50;background:rgba(224,201,130,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(110,16,35,.14)}
+  .nav__in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 24px;max-width:1140px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .brand img{height:48px;width:auto}
+  .brand span{display:block;font-size:10px;letter-spacing:.34em;color:var(--oro);font-weight:600;margin-top:3px}
+  .brand b{font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--amaranto);line-height:1}
+  .menu{display:flex;align-items:center;gap:26px;list-style:none}
+  .menu a{text-decoration:none;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:.01em;transition:color .2s}
+  .menu a:hover{color:var(--amaranto)}
+  .btn{display:inline-flex;align-items:center;gap:.5em;font-family:'Cinzel',serif;font-weight:600;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;font-size:13px;padding:11px 24px;border-radius:2px;border:1.5px solid var(--oro);cursor:pointer;transition:all .3s}
+  .btn--gold{background:linear-gradient(180deg,#E8CC80,#C2974A);color:#3A2407;border-color:#A87F30;box-shadow:0 4px 14px rgba(110,72,8,.30)}
+  .btn--gold:hover,.btn--gold:focus-visible{background:var(--amaranto);color:var(--crema);border-color:var(--oro);box-shadow:0 8px 22px rgba(110,16,35,.4)}
+  .btn--ghost{background:transparent;color:var(--amaranto)}
+  .btn--ghost:hover{background:var(--amaranto);color:var(--crema)}
+  .navtoggle,.navtoggle-lbl{display:none}
+
+  .backbar{background:rgba(78,18,26,.06);border-bottom:1px solid rgba(110,16,35,.1)}
+  .backbar .wrap{display:flex;padding-top:12px;padding-bottom:12px}
+  .back{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--amaranto);text-decoration:none;letter-spacing:.02em}
+  .back:hover{color:var(--amaranto-deep);text-decoration:underline}
+  .back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  .phero{background:linear-gradient(135deg,var(--amaranto) 0%,var(--amaranto-deep) 100%);color:var(--crema);text-align:center;padding:52px 0 46px}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:var(--oro-bright);margin-bottom:14px}
+  .phero h1{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(28px,5vw,46px);line-height:1.06}
+  .phero p{color:rgba(247,244,227,.86);max-width:56ch;margin:14px auto 0;font-size:clamp(15px,2.2vw,17px)}
+
+  section{padding:48px 0}
+
+  /* --- GATE (parola d'ordine) --- */
+  .gate{max-width:440px;margin:0 auto;background:#FBF6E6;border:1px solid var(--oro);border-radius:14px;padding:32px 28px 26px;text-align:center;box-shadow:0 18px 50px rgba(78,18,26,.12)}
+  .gate .lock{width:54px;height:54px;margin:0 auto 14px;border-radius:50%;background:var(--amaranto);display:flex;align-items:center;justify-content:center}
+  .gate .lock svg{width:26px;height:26px;stroke:var(--crema);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .gate h2{font-family:'Cinzel',serif;color:var(--amaranto);font-size:21px;line-height:1.15;margin-bottom:8px}
+  .gate p{font-size:14px;color:var(--ink-soft);margin-bottom:20px}
+  .gate input{width:100%;padding:12px 14px;border:1px solid rgba(110,16,35,.32);border-radius:8px;font:inherit;font-size:15px;background:#FFFDF6;color:var(--ink);text-align:center;letter-spacing:.02em}
+  .gate input:focus{outline:none;border-color:var(--oro);box-shadow:0 0 0 3px rgba(194,151,74,.20)}
+  .gate .btn{width:100%;justify-content:center;margin-top:14px}
+  .gate .gmsg{font-size:13px;margin-top:12px;min-height:1.1em;color:#b81e33;font-weight:600}
+  .gate .ghint{font-size:12px;color:var(--ink-soft);font-style:italic;margin-top:16px}
+  .gate.is-loading,.gate.is-hidden{display:none}
+  .loadrow{text-align:center;color:var(--ink-soft);font-size:14px;padding:20px 0}
+
+  /* --- CONTENUTO MODULI (iniettato dal server) --- */
+  #materiali{max-width:820px;margin:0 auto;display:none}
+  #materiali.show{display:block}
+  #materiali .m-intro p{font-size:16px;color:var(--ink);margin-bottom:14px}
+  #materiali .m-warn{background:#fff;border:1px solid rgba(110,16,35,.2);border-left:4px solid var(--oro);border-radius:8px;padding:14px 18px;font-size:14px;color:var(--ink);margin:6px 0 30px}
+  #materiali .m-warn b{color:var(--amaranto)}
+
+  #materiali .m-safety{background:linear-gradient(135deg,var(--amaranto) 0%,var(--amaranto-deep) 100%);color:var(--crema);border-radius:14px;padding:26px 26px 22px;margin-bottom:34px;box-shadow:0 14px 40px rgba(78,18,26,.22)}
+  #materiali .m-safety h3{font-family:'Cinzel',serif;font-size:19px;color:var(--oro-bright);margin-bottom:14px;letter-spacing:.02em}
+  #materiali .m-rules{list-style:none;counter-reset:r;display:grid;gap:10px;margin-bottom:14px}
+  #materiali .m-rules li{counter-increment:r;position:relative;padding-left:40px;font-size:14.5px;color:rgba(247,244,227,.92)}
+  #materiali .m-rules li::before{content:counter(r);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--oro);color:#3A2407;font-family:'Cinzel',serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+  #materiali .m-rules b{color:#fff}
+  #materiali .m-prot{font-size:14px;color:rgba(247,244,227,.9);border-top:1px solid rgba(247,244,227,.2);padding-top:14px;margin-top:4px}
+  #materiali .m-prot b{color:var(--oro-bright)}
+
+  #materiali .m-acc{display:flex;flex-direction:column;gap:12px}
+  #materiali .m-mod{background:#FBF6E6;border:1px solid rgba(110,16,35,.18);border-radius:12px;overflow:hidden}
+  #materiali .m-mod[open]{box-shadow:0 10px 30px rgba(78,18,26,.1)}
+  #materiali .m-sum{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px 22px;font-family:'Cinzel',serif;font-weight:600;font-size:18px;color:var(--amaranto);user-select:none}
+  #materiali .m-sum::-webkit-details-marker{display:none}
+  #materiali .m-sum::after{content:"";margin-left:auto;width:11px;height:11px;border-right:2.4px solid var(--amaranto);border-bottom:2.4px solid var(--amaranto);transform:rotate(45deg);transition:transform .25s;flex-shrink:0}
+  #materiali .m-mod[open] .m-sum::after{transform:rotate(225deg)}
+  #materiali .m-n{width:34px;height:34px;flex-shrink:0;border-radius:50%;background:var(--amaranto);color:var(--crema);font-size:16px;display:flex;align-items:center;justify-content:center}
+  #materiali .m-body{padding:4px 24px 24px}
+  #materiali .m-body p{font-size:15px;color:var(--ink);margin-bottom:13px}
+  #materiali .m-body b{color:var(--amaranto)}
+  #materiali .m-list{margin:0 0 14px;padding-left:22px}
+  #materiali .m-list li{font-size:15px;margin-bottom:8px}
+  #materiali .m-list li b{color:var(--amaranto)}
+  #materiali .m-fig{margin:18px 0 18px}
+  #materiali .m-fig img{width:100%;border-radius:10px;border:1px solid rgba(110,16,35,.16);box-shadow:0 10px 28px rgba(78,18,26,.14)}
+  #materiali .m-fig figcaption{font-size:12.5px;color:var(--ink-soft);font-style:italic;text-align:center;margin-top:8px}
+  #materiali .m-cmd{width:100%;border-collapse:collapse;margin:6px 0 6px;font-size:13.5px}
+  #materiali .m-cmd th{background:var(--amaranto);color:var(--crema);text-align:left;padding:10px 12px;font-family:'Cinzel',serif;font-weight:600;font-size:12.5px;letter-spacing:.02em}
+  #materiali .m-cmd td{padding:10px 12px;border-bottom:1px solid rgba(110,16,35,.12);vertical-align:top}
+  #materiali .m-cmd tr:nth-child(even) td{background:rgba(110,16,35,.04)}
+  #materiali .m-cmd td:first-child{font-weight:600;color:var(--amaranto);white-space:nowrap}
+  #materiali .m-fineprint{font-size:13px;color:var(--ink-soft);font-style:italic;border-top:1px solid rgba(110,16,35,.12);padding-top:12px}
+  #materiali .m-dl{text-align:center;margin:34px 0 10px}
+  #materiali .m-note{font-size:12px;color:var(--ink-soft);text-align:center;border-top:1px solid rgba(110,16,35,.16);margin-top:30px;padding-top:18px;line-height:1.55}
+
+  footer{background:var(--amaranto-deep);color:rgba(247,244,227,.86);padding:46px 0 26px}
+  .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+  .foot b.logo{font-family:'Cinzel',serif;font-size:20px;color:var(--oro-bright);letter-spacing:.05em;display:block;margin-bottom:10px}
+  .foot h4{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.08em;color:var(--oro);margin-bottom:12px;text-transform:uppercase}
+  .foot a,.foot p{font-size:13.5px;color:rgba(247,244,227,.8);text-decoration:none;display:block;margin-bottom:7px}
+  .foot a:hover{color:var(--oro-bright)}
+  .copy{border-top:1px solid rgba(247,244,227,.16);margin-top:30px;padding-top:18px;font-size:12px;color:rgba(247,244,227,.55);text-align:center}
+
+  @media (max-width:860px){
+    .menu{position:absolute;top:67px;left:0;right:0;flex-direction:column;gap:0;background:var(--crema);border-bottom:1px solid rgba(110,16,35,.14);max-height:0;overflow:hidden;transition:max-height .3s ease}
+    .menu li{width:100%;border-top:1px solid rgba(110,16,35,.08)}
+    .menu li a{display:block;padding:14px 24px}
+    .menu li.cta-li{padding:14px 24px}
+    .navtoggle:checked ~ .menu{max-height:420px}
+    .navtoggle-lbl{display:block;cursor:pointer;width:30px;height:22px;position:relative}
+    .navtoggle-lbl span,.navtoggle-lbl span::before,.navtoggle-lbl span::after{content:"";position:absolute;left:0;width:30px;height:2.5px;background:var(--amaranto);border-radius:2px;transition:.3s}
+    .navtoggle-lbl span{top:10px}.navtoggle-lbl span::before{top:-8px}.navtoggle-lbl span::after{top:8px}
+    .foot{grid-template-columns:1fr;gap:24px}
+    #materiali .m-cmd{font-size:12.5px}
+    #materiali .m-cmd th,#materiali .m-cmd td{padding:8px 9px}
+  }
+</style></head>
+<body>
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="home.html">
+      <img src="assets/logo.png" alt="Stemma ASD Bersaglieri SGV">
+      <span><b>ASD BERSAGLIERI</b>SGV</span>
+    </a>
+    <input type="checkbox" id="nt" class="navtoggle">
+    <label for="nt" class="navtoggle-lbl"><span></span></label>
+    <ul class="menu">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="home.html#discipline">Discipline</a></li>
+      <li><a href="corsi.html">Corsi</a></li>
+      <li><a href="eventi.html">Eventi</a></li>
+      <li><a href="galleria.html">Galleria</a></li>
+      <li><a href="corsi.html#contatti">Contatti</a></li>
+      <li class="cta-li"><a class="btn btn--gold" href="iscrizioni.html">Iscriviti</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="backbar">
+  <div class="wrap">
+    <a class="back" href="corso-tiro.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      Torna al corso di tiro
+    </a>
+  </div>
+</div>
+
+<main>
+  <section class="phero">
+    <div class="wrap">
+      <p class="eyebrow">Corso di Tiro &#183; Fase 1</p>
+      <h1>Materiali del corso</h1>
+      <p>Area riservata ai partecipanti. I sei moduli della didattica d&#8217;aula e la dispensa da scaricare.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+
+      <!-- GATE: parola d'ordine -->
+      <div class="gate" id="gate" hidden>
+        <div class="lock">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h2>Contenuti riservati</h2>
+        <p>Inserisci la parola d&#8217;ordine che ti &#232; stata comunicata dagli istruttori.</p>
+        <input type="password" id="gpwd" placeholder="Parola d&#8217;ordine" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+        <button class="btn btn--gold" type="button" id="gbtn">Entra</button>
+        <p class="gmsg" id="gmsg" role="status" aria-live="polite"></p>
+        <p class="ghint">Sei iscritto ma non hai la parola d&#8217;ordine? Scrivi a <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>.</p>
+      </div>
+
+      <!-- stato di caricamento iniziale -->
+      <div class="loadrow" id="loadrow">Caricamento&#8230;</div>
+
+      <!-- CONTENUTO (iniettato dal server dopo la parola d'ordine) -->
+      <div id="materiali" aria-live="polite"></div>
+
+    </div>
+  </section>
+</main>
+
+<footer id="contatti">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <b class="logo">ASD Bersaglieri SGV</b>
+        <p>Associazione Sportiva Dilettantistica<br>senza fini di lucro.</p>
+        <p>Sede legale: Largo Vetrai 1, 52027 San Giovanni Valdarno (AR)</p>
+        <p>Codice Fiscale: 90043230516</p>
+        <p>Affiliata CSI &#8212; codice 05000759 (a.s. 2025/26)</p>
+      </div>
+      <div>
+        <h4>Sezioni</h4>
+        <a href="home.html#discipline">Discipline</a>
+        <a href="corsi.html">Corsi</a>
+        <a href="eventi.html">Eventi</a>
+        <a href="galleria.html">Galleria</a>
+        <a href="iscrizioni.html">Iscrizioni</a>
+      </div>
+      <div>
+        <h4>Contatti</h4>
+        <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>
+        <p style="font-size:12px;color:rgba(247,244,227,.6);margin-top:10px">Titolare del trattamento dati: ASD Bersaglieri SGV (Reg. UE 2016/679).</p>
+      </div>
+    </div>
+    <div class="copy">&#169; 2026 ASD Bersaglieri SGV &#8212; Tutti i diritti riservati. &#183; <a href="privacy.html" style="color:rgba(247,244,227,.72);text-decoration:underline">Informativa privacy</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var API='/api/materiali-tiro';
+  var gate=document.getElementById('gate');
+  var load=document.getElementById('loadrow');
+  var mat=document.getElementById('materiali');
+  var pwd=document.getElementById('gpwd');
+  var btn=document.getElementById('gbtn');
+  var msg=document.getElementById('gmsg');
+
+  function showGate(text){
+    load.style.display='none';
+    gate.hidden=false;
+    if(text){msg.textContent=text;}
+  }
+  function showContent(html){
+    mat.innerHTML=html;
+    load.style.display='none';
+    gate.hidden=true;
+    mat.classList.add('show');
+  }
+  function configError(){
+    load.style.display='none';
+    gate.hidden=false;
+    gate.querySelector('h2').textContent='Accesso non configurato';
+    gate.querySelector('p').textContent='L\u2019area non \u00e8 ancora attiva. Avvisa l\u2019associazione.';
+    pwd.style.display='none'; btn.style.display='none';
+  }
+
+  // 1) Tentativo automatico: se ho gi\u00e0 il cookie valido, entro senza chiedere nulla.
+  fetch(API,{method:'GET',headers:{'Accept':'application/json'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.config){return configError();}
+      if(d&&d.ok){return showContent(d.html);}
+      showGate('');
+    })
+    .catch(function(){showGate('');});
+
+  // 2) Invio della parola d'ordine.
+  function entra(){
+    var p=(pwd.value||'').trim();
+    if(!p){msg.textContent='Inserisci la parola d\u2019ordine.';return;}
+    btn.disabled=true; var old=btn.textContent; btn.textContent='Verifica\u2026'; msg.textContent='';
+    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:p})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.ok){showContent(d.html);window.scrollTo({top:0});return;}
+        if(d&&d.config){return configError();}
+        msg.textContent=(d&&d.message)||'Parola d\u2019ordine errata.';
+        btn.disabled=false;btn.textContent=old;pwd.select();
+      })
+      .catch(function(){
+        msg.textContent='Errore di connessione. Riprova.';
+        btn.disabled=false;btn.textContent=old;
+      });
+  }
+  btn.addEventListener('click',entra);
+  pwd.addEventListener('keydown',function(e){if(e.key==='Enter')entra();});
+
+  // chiusura menu mobile
+  document.querySelectorAll('.menu a').forEach(function(a){a.addEventListener('click',function(){var c=document.getElementById('nt');if(c)c.checked=false;});});
+})();
+</script>
+
+</body></html>
