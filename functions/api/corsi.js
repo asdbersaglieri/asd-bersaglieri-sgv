@@ -7,9 +7,13 @@ export async function onRequestGet(context) {
     if (!env.DB) return json({ items: [] });
     await ensureCorsi(env);
     const { results } = await env.DB.prepare(
-      "SELECT slug,titolo,durata,sede,eta_minima,requisiti,quota,video FROM corsi ORDER BY rowid ASC"
+      "SELECT slug,titolo,durata,sede,eta_minima,requisiti,quota,video,dispensa,materiali_pwd_hash FROM corsi ORDER BY rowid ASC"
     ).all();
-    return json({ items: results || [] });
+    const items = (results || []).map(r => {
+      const { materiali_pwd_hash, ...rest } = r;
+      return { ...rest, haPwd: !!(materiali_pwd_hash && String(materiali_pwd_hash).length) };
+    });
+    return json({ items });
   } catch (e) { return json({ items: [] }); }
 }
 
@@ -28,6 +32,8 @@ async function ensureCorsi(env) {
        updated_at TEXT
      )`
   ).run();
+  try { await env.DB.prepare("ALTER TABLE corsi ADD COLUMN dispensa TEXT").run(); } catch (e) {}
+  try { await env.DB.prepare("ALTER TABLE corsi ADD COLUMN materiali_pwd_hash TEXT").run(); } catch (e) {}
   await env.DB.batch([
     env.DB.prepare("INSERT OR IGNORE INTO corsi (slug,titolo) VALUES (?,?)").bind("corso-tiro", "Tiro al bersaglio sportivo"),
     env.DB.prepare("INSERT OR IGNORE INTO corsi (slug,titolo) VALUES (?,?)").bind("corso-orientamento", "Orientamento"),
