@@ -671,10 +671,88 @@ function renderCorsiEdit(){
           <div class="hint" id="vid-ptext-${esc(c.slug)}" style="margin-top:6px"></div>
         </div>
       </div>
+      <div style="margin-top:16px;border-top:1px dashed rgba(110,16,35,.25);padding-top:14px">
+        <label style="font-family:'Cinzel',serif;color:var(--amaranto);font-weight:600;font-size:13px;display:block;margin-bottom:8px">Dispensa e materiali</label>
+        <div style="margin-bottom:8px">${c.dispensa?'<span class="tag pub">Dispensa presente</span>':'<span class="tag draft">Nessuna dispensa</span>'}</div>
+        <input type="file" id="disp-file-${esc(c.slug)}" accept="application/pdf,.pdf">
+        <div class="hint">Solo PDF, max ~25 MB. Un nuovo caricamento sostituisce il precedente.</div>
+        <div class="formactions" style="margin-top:10px">
+          <button class="btn disp-up" data-slug="${esc(c.slug)}">&#8593; Carica dispensa</button>
+          ${c.dispensa?`<button class="btn ghost disp-del" data-slug="${esc(c.slug)}">Rimuovi dispensa</button>`:''}
+          <span class="msg" id="disp-msg-${esc(c.slug)}"></span>
+        </div>
+        <div style="margin-top:16px">
+          <label style="display:block;font-size:13px;font-weight:600;color:var(--amaranto);margin-bottom:6px">Parola d'ordine dei materiali</label>
+          <div style="margin-bottom:8px">${c.haPwd?'<span class="tag pub">Parola d\'ordine impostata</span>':'<span class="tag draft">Nessuna parola d\'ordine</span>'}</div>
+          <input type="password" id="pwd-input-${esc(c.slug)}" maxlength="80" placeholder="${c.haPwd?'Scrivi una nuova parola d\'ordine per cambiarla':'Scegli una parola d\'ordine'}" autocomplete="new-password">
+          <div class="hint">La useranno i partecipanti per aprire la pagina dei materiali. Impostandone una nuova, la precedente smette di funzionare.</div>
+          <div class="formactions" style="margin-top:10px">
+            <button class="btn pwd-set" data-slug="${esc(c.slug)}">Imposta parola d'ordine</button>
+            ${c.haPwd?`<button class="btn ghost pwd-clr" data-slug="${esc(c.slug)}">Rimuovi accesso</button>`:''}
+            <span class="msg" id="pwd-msg-${esc(c.slug)}"></span>
+          </div>
+        </div>
+      </div>
     </div>`).join('');
   box.querySelectorAll('.c-save').forEach(b=>b.addEventListener('click',()=>saveCorso(b.dataset.slug)));
   box.querySelectorAll('.vid-up').forEach(b=>b.addEventListener('click',()=>uploadVideo(b.dataset.slug)));
   box.querySelectorAll('.vid-del').forEach(b=>b.addEventListener('click',()=>deleteVideo(b.dataset.slug)));
+  box.querySelectorAll('.disp-up').forEach(b=>b.addEventListener('click',()=>uploadDispensa(b.dataset.slug)));
+  box.querySelectorAll('.disp-del').forEach(b=>b.addEventListener('click',()=>deleteDispensa(b.dataset.slug)));
+  box.querySelectorAll('.pwd-set').forEach(b=>b.addEventListener('click',()=>setPwd(b.dataset.slug)));
+  box.querySelectorAll('.pwd-clr').forEach(b=>b.addEventListener('click',()=>clearPwd(b.dataset.slug)));
+}
+function uploadDispensa(slug){
+  var inp=$('disp-file-'+slug); var f=(inp&&inp.files)?inp.files[0]:null;
+  var msg=$('disp-msg-'+slug); if(msg){msg.className='msg';msg.textContent='';}
+  if(!f){ if(msg){msg.className='msg err';msg.textContent='Seleziona un file PDF.';} return; }
+  if(f.size>25*1024*1024){ if(msg){msg.className='msg err';msg.textContent='Dispensa troppo grande (max ~25 MB).';} return; }
+  if(msg){msg.className='msg';msg.textContent='Caricamento in corso\u2026';}
+  var fd=new FormData(); fd.append('slug',slug); fd.append('dispensa',f,(f.name||'dispensa.pdf'));
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/admin/corsi-dispensa',true);
+  xhr.onload=function(){
+    var d={}; try{d=JSON.parse(xhr.responseText);}catch(e){}
+    if(xhr.status===200&&d.success){
+      if(msg){msg.className='msg ok';msg.textContent='Dispensa caricata.';}
+      var i=CORSI.findIndex(function(x){return x.slug===slug;}); if(i>=0)CORSI[i].dispensa=d.chiave;
+      setTimeout(renderCorsiEdit,900);
+    }else{
+      if(msg){msg.className='msg err';msg.textContent=(d&&d.message)||'Caricamento non riuscito.';}
+    }
+  };
+  xhr.onerror=function(){ if(msg){msg.className='msg err';msg.textContent='Caricamento non riuscito (connessione).';} };
+  xhr.send(fd);
+}
+function deleteDispensa(slug){
+  if(!confirm('Rimuovere la dispensa di questo corso? L\'azione \u00e8 definitiva.'))return;
+  fetch('/api/admin/corsi-dispensa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete-pdf',slug:slug})})
+    .then(function(r){return r.json();}).then(function(d){
+      if(d.success){var i=CORSI.findIndex(function(x){return x.slug===slug;}); if(i>=0)CORSI[i].dispensa=''; renderCorsiEdit();}
+      else alert('Rimozione non riuscita.');
+    }).catch(function(){alert('Rimozione non riuscita.');});
+}
+function setPwd(slug){
+  var inp=$('pwd-input-'+slug); var v=inp?String(inp.value||'').trim():'';
+  var msg=$('pwd-msg-'+slug); if(msg){msg.className='msg';msg.textContent='';}
+  if(!v){ if(msg){msg.className='msg err';msg.textContent='Scrivi una parola d\'ordine.';} return; }
+  fetch('/api/admin/corsi-dispensa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'set-pwd',slug:slug,password:v})})
+    .then(function(r){return r.json();}).then(function(d){
+      if(d.success){
+        if(msg){msg.className='msg ok';msg.textContent='Parola d\'ordine impostata.';}
+        var i=CORSI.findIndex(function(x){return x.slug===slug;}); if(i>=0)CORSI[i].haPwd=true;
+        if(inp)inp.value='';
+        setTimeout(renderCorsiEdit,900);
+      }else{ if(msg){msg.className='msg err';msg.textContent=(d&&d.message)||'Operazione non riuscita.';} }
+    }).catch(function(){ if(msg){msg.className='msg err';msg.textContent='Operazione non riuscita.';} });
+}
+function clearPwd(slug){
+  if(!confirm('Rimuovere la parola d\'ordine? I partecipanti non potranno pi\u00f9 aprire i materiali finch\u00e9 non ne imposti una nuova.'))return;
+  fetch('/api/admin/corsi-dispensa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'clear-pwd',slug:slug})})
+    .then(function(r){return r.json();}).then(function(d){
+      if(d.success){var i=CORSI.findIndex(function(x){return x.slug===slug;}); if(i>=0)CORSI[i].haPwd=false; renderCorsiEdit();}
+      else alert('Rimozione non riuscita.');
+    }).catch(function(){alert('Rimozione non riuscita.');});
 }
 function uploadVideo(slug){
   var inp=$('vid-file-'+slug); var f=(inp&&inp.files)?inp.files[0]:null;
