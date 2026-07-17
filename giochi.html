@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gioca con noi &#8212; ASD Bersaglieri SGV</title>
+<meta name="description" content="Giochi e quiz dell'ASD Bersaglieri SGV: mettiti alla prova con i quiz dei corsi e non solo. Domande sempre diverse a ogni partita.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#E0C982; --crema2:#D7BC6F;
+    --amaranto:#6E1023; --amaranto-deep:#4E121A;
+    --oro:#C2974A; --oro-bright:#E0BE6E;
+    --ink:#241410; --ink-soft:rgba(36,20,16,.74);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--crema);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+  img{display:block;max-width:100%}
+  .wrap{width:100%;max-width:1140px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+
+  /* NAV */
+  .nav{position:sticky;top:0;z-index:50;background:rgba(224,201,130,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(110,16,35,.14)}
+  .nav__in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 24px;max-width:1140px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .brand img{height:48px;width:auto}
+  .brand b{font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:.06em;color:var(--amaranto);line-height:1}
+  .brand span{display:block;font-size:10px;letter-spacing:.34em;color:var(--oro);font-weight:600;margin-top:3px}
+  .menu{display:flex;align-items:center;gap:26px;list-style:none}
+  .menu a{text-decoration:none;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:.01em;transition:color .2s}
+  .menu a:hover{color:var(--amaranto)}
+  .btn{display:inline-flex;align-items:center;gap:.5em;font-family:'Cinzel',serif;font-weight:600;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;font-size:13px;padding:11px 24px;border-radius:2px;border:1.5px solid var(--oro);cursor:pointer;transition:all .3s}
+  .btn--gold{background:linear-gradient(180deg,#E8CC80,#C2974A);color:#3A2407;border-color:#A87F30;box-shadow:0 4px 14px rgba(110,72,8,.30)}
+  .btn--gold:hover,.btn--gold:focus-visible{background:var(--amaranto);color:var(--crema);border-color:var(--oro);box-shadow:0 8px 22px rgba(110,16,35,.4)}
+  .btn--ghost{background:transparent;color:var(--amaranto)}
+  .btn--ghost:hover{background:var(--amaranto);color:var(--crema)}
+  .navtoggle,.navtoggle-lbl{display:none}
+
+  section{padding:62px 0}
+  .sec-head{text-align:center;max-width:60ch;margin:0 auto 38px}
+  .sec-head h2{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(26px,4.4vw,40px);color:var(--amaranto);margin-bottom:12px}
+  .sec-head p{color:var(--ink-soft);font-size:clamp(15px,2.2vw,17px)}
+
+  /* FOOTER */
+  footer{background:var(--amaranto-deep);color:rgba(247,244,227,.86);padding:46px 0 26px}
+  .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+  .foot b.logo{font-family:'Cinzel',serif;font-size:20px;color:var(--oro-bright);letter-spacing:.05em;display:block;margin-bottom:10px}
+  .foot h4{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.08em;color:var(--oro);margin-bottom:12px;text-transform:uppercase}
+  .foot a,.foot p{font-size:13.5px;color:rgba(247,244,227,.8);text-decoration:none;display:block;margin-bottom:7px}
+  .foot a:hover{color:var(--oro-bright)}
+  .ph-note{font-size:11px;color:rgba(247,244,227,.45);font-style:italic}
+  .copy{border-top:1px solid rgba(247,244,227,.16);margin-top:30px;padding-top:18px;font-size:12px;color:rgba(247,244,227,.55);text-align:center}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* PAGE HERO */
+  .phero{background:linear-gradient(135deg,var(--amaranto) 0%,var(--amaranto-deep) 100%);color:var(--crema);text-align:center;padding:54px 0 48px}
+  .phero .eyebrow{color:var(--oro-bright)}
+  .phero h1{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(30px,5.4vw,50px);line-height:1.04}
+  .phero p{color:rgba(247,244,227,.86);max-width:56ch;margin:14px auto 0;font-size:clamp(15px,2.2vw,17px)}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:#8F5E12;margin-bottom:14px}
+  .phero .eyebrow{color:var(--oro-bright)}
+
+  /* CATEGORIE */
+  .qcards{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:840px;margin:0 auto}
+  .qcard{background:#fff;border:1px solid rgba(110,16,35,.12);border-radius:10px;padding:28px 24px;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+  .qcard:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(78,18,26,.14)}
+  .qcard .num{font-family:'Cinzel',serif;font-size:15px;color:var(--oro);font-weight:600;letter-spacing:.1em}
+  .qcard h3{font-family:'Cinzel',serif;font-weight:600;font-size:20px;color:var(--amaranto);margin:8px 0 10px;line-height:1.2}
+  .qcard p{font-size:14.5px;color:var(--ink-soft);flex:1}
+  .qcard .qmeta{font-size:12.5px;color:#8F5E12;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:14px 0 16px}
+  .qcard .btn{justify-content:center}
+  /* card in arrivo */
+  .qcard.soon{opacity:.72;background:#FBF6E6}
+  .qcard.soon:hover{transform:none;box-shadow:none}
+  .qcard .badge{align-self:flex-start;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8F5E12;background:#F0E4C2;border:1px solid rgba(143,94,18,.35);border-radius:20px;padding:5px 12px;margin-top:14px}
+
+  /* QUIZ RUNNER */
+  #quizview,#resultview{display:none}
+  .qbox{max-width:720px;margin:0 auto;background:#fff;border:1px solid rgba(110,16,35,.12);border-radius:12px;padding:30px 28px;box-shadow:0 10px 34px rgba(78,18,26,.10)}
+  .qtop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+  .qcat{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--amaranto);letter-spacing:.06em}
+  .qcount{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .qbar{height:6px;background:#F0E4C2;border-radius:3px;overflow:hidden;margin-bottom:22px}
+  .qbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--oro),var(--amaranto));border-radius:3px;transition:width .35s ease}
+  .qtext{font-size:clamp(17px,2.6vw,20px);font-weight:600;line-height:1.4;margin-bottom:20px}
+  .answers{display:flex;flex-direction:column;gap:10px;list-style:none}
+  .answers button{font:inherit;font-size:15px;text-align:left;padding:13px 16px;border:1.5px solid rgba(110,16,35,.25);border-radius:9px;background:#FFFDF6;color:var(--ink);cursor:pointer;transition:border-color .2s,background .2s;width:100%}
+  .answers button:hover:not(:disabled){border-color:var(--amaranto);background:#FBF6E6}
+  .answers button:disabled{cursor:default;opacity:.92}
+  .answers button.ok{border-color:#1d7a3b;background:#E9F5EC;font-weight:600}
+  .answers button.ko{border-color:#b81e33;background:#FBEAEC}
+  .fb{display:none;margin-top:18px;border-radius:9px;padding:14px 16px;font-size:14px;line-height:1.5}
+  .fb.ok{display:block;background:#E9F5EC;border:1px solid #1d7a3b;color:#14532b}
+  .fb.ko{display:block;background:#FBEAEC;border:1px solid #b81e33;color:#7a1424}
+  .fb b{display:block;font-family:'Cinzel',serif;letter-spacing:.04em;margin-bottom:4px}
+  .qnext{margin-top:18px;text-align:right}
+  .qnext .btn{display:none}
+  .qnext .btn.show{display:inline-flex}
+  .qquit{margin-top:26px;text-align:center}
+  .qquit a{font-size:13px;color:var(--ink-soft);text-decoration:underline;cursor:pointer}
+
+  /* RISULTATO */
+  .rbox{max-width:600px;margin:0 auto;text-align:center;background:#fff;border:1px solid rgba(110,16,35,.12);border-radius:12px;padding:40px 28px;box-shadow:0 10px 34px rgba(78,18,26,.10)}
+  .rscore{font-family:'Cinzel',serif;font-size:clamp(40px,8vw,60px);font-weight:700;color:var(--amaranto);line-height:1}
+  .rscore small{font-size:.45em;color:var(--oro);font-weight:600}
+  .rmsg{font-family:'Cinzel',serif;font-size:20px;color:var(--amaranto);margin:14px 0 8px}
+  .rtext{font-size:14.5px;color:var(--ink-soft);max-width:44ch;margin:0 auto 26px}
+  .ractions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  @media (max-width:860px){
+    .menu{position:absolute;top:67px;left:0;right:0;flex-direction:column;gap:0;background:var(--crema);border-bottom:1px solid rgba(110,16,35,.14);max-height:0;overflow:hidden;transition:max-height .3s ease}
+    .menu li{width:100%;border-top:1px solid rgba(110,16,35,.08)}
+    .menu li a{display:block;padding:14px 24px}
+    .menu li.cta-li{padding:14px 24px}
+    .navtoggle:checked ~ .menu{max-height:560px}
+    .navtoggle-lbl{display:block;cursor:pointer;width:30px;height:22px;position:relative}
+    .navtoggle-lbl span,.navtoggle-lbl span::before,.navtoggle-lbl span::after{content:"";position:absolute;left:0;width:30px;height:2.5px;background:var(--amaranto);border-radius:2px;transition:.3s}
+    .navtoggle-lbl span{top:10px}.navtoggle-lbl span::before{top:-8px}.navtoggle-lbl span::after{top:8px}
+    .qcards{grid-template-columns:1fr;gap:16px}
+    .foot{grid-template-columns:1fr;gap:24px}
+  }
+</style></head>
+<body>
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="home.html">
+      <img src="assets/logo.png" alt="Stemma ASD Bersaglieri SGV">
+      <span><b>ASD BERSAGLIERI</b>SGV</span>
+    </a>
+    <input type="checkbox" id="nt" class="navtoggle">
+    <label for="nt" class="navtoggle-lbl"><span></span></label>
+    <ul class="menu">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="home.html#discipline">Discipline</a></li>
+      <li><a href="corsi.html">Corsi</a></li>
+      <li><a href="eventi.html">Eventi</a></li>
+      <li><a href="galleria.html">Galleria</a></li>
+      <li><a href="giochi.html" style="color:var(--amaranto)">Giochi</a></li>
+      <li><a href="#contatti">Contatti</a></li>
+      <li><a href="soci.html">App soci</a></li>
+      <li><a href="area-partecipanti.html">Area partecipanti</a></li>
+      <li class="cta-li"><a class="btn btn--gold" href="iscrizioni.html">Iscriviti</a></li>
+    </ul>
+  </div>
+</header>
+<main id="top">
+
+  <section class="phero">
+    <div class="wrap">
+      <p class="eyebrow">I nostri giochi</p>
+      <h1>Gioca con noi</h1>
+      <p>Giochi e quiz per mettersi alla prova e imparare divertendosi. Si parte dai quiz dei nostri corsi &#8212; e altri giochi sono in arrivo. Le domande cambiano a ogni partita, quindi puoi rigiocare e trovarne sempre di nuove.</p>
+    </div>
+  </section>
+
+  <section id="catview">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Quiz dei corsi</h2>
+        <p>Le domande dei nostri corsi. Ogni partita pesca un gruppo di domande a caso e le mescola: nessuna giocata è uguale alla precedente, e dopo ogni risposta trovi la spiegazione.</p>
+      </div>
+      <div class="qcards">
+        <div class="qcard reveal">
+          <span class="num">01</span>
+          <h3>Tiro al bersaglio sportivo</h3>
+          <p>Sicurezza e maneggio dell'arma, comportamento in poligono, mire, scatto, respirazione, postura e concentrazione: le basi della disciplina della precisione.</p>
+          <div class="qmeta">12 domande a partita &#183; sempre diverse</div>
+          <button class="btn btn--gold" type="button" onclick="avviaQuiz('tiro')">Gioca</button>
+        </div>
+        <div class="qcard soon reveal">
+          <span class="num">02</span>
+          <h3>Orientamento</h3>
+          <p>Carta, bussola, azimut e lettura del terreno: muoversi senza perdere la rotta.</p>
+          <span class="badge">In arrivo</span>
+        </div>
+        <div class="qcard soon reveal">
+          <span class="num">03</span>
+          <h3>Sopravvivenza</h3>
+          <p>Riparo, acqua, fuoco e primo soccorso: le competenze per cavarsela all'aperto.</p>
+          <span class="badge">In arrivo</span>
+        </div>
+      </div>
+
+      <div class="sec-head reveal" style="margin-top:64px">
+        <h2>Quiz sui Bersaglieri</h2>
+        <p>Un gioco a parte, che non c'entra con i corsi: la storia e le tradizioni del Corpo dei Bersaglieri, dal 1836 a oggi.</p>
+      </div>
+      <div class="qcards">
+        <div class="qcard soon reveal">
+          <h3>Storia dei Bersaglieri</h3>
+          <p>La Marmora, Goito e Porta Pia, il piumetto di penne di gallo cedrone e la fanfara che suona di corsa.</p>
+          <span class="badge">In arrivo</span>
+        </div>
+      </div>
+
+      <p style="text-align:center;color:var(--ink-soft);margin-top:44px;font-size:14px">E non &#232; tutto: altri giochi sono in arrivo.</p>
+    </div>
+  </section>
+
+  <section id="quizview">
+    <div class="wrap">
+      <div class="qbox">
+        <div class="qtop">
+          <span class="qcat" id="q-cat">Categoria</span>
+          <span class="qcount" id="q-count">1 / 12</span>
+        </div>
+        <div class="qbar"><i id="q-bar"></i></div>
+        <p class="qtext" id="q-text">Domanda</p>
+        <ul class="answers" id="q-answers"></ul>
+        <div class="fb" id="q-fb" role="status" aria-live="polite"></div>
+        <div class="qnext"><button class="btn btn--gold" type="button" id="q-next" onclick="prossimaDomanda()">Avanti</button></div>
+      </div>
+      <p class="qquit"><a onclick="tornaAlleCategorie()">Abbandona e torna alle categorie</a></p>
+    </div>
+  </section>
+
+  <section id="resultview">
+    <div class="wrap">
+      <div class="rbox">
+        <p class="eyebrow" style="margin-bottom:10px">Risultato</p>
+        <div class="rscore"><span id="r-score">0</span><small id="r-tot"> / 12</small></div>
+        <p class="rmsg" id="r-msg">&nbsp;</p>
+        <p class="rtext" id="r-text">&nbsp;</p>
+        <div class="ractions">
+          <button class="btn btn--gold" type="button" onclick="rigioca()">Rigioca</button>
+          <button class="btn btn--ghost" type="button" onclick="tornaAlleCategorie()">Torna alle categorie</button>
+        </div>
+        <p class="rtext" style="margin:26px auto 0;font-size:13px">Ti &#232; piaciuto? Nei nostri corsi queste cose si imparano sul campo. <a href="corsi.html" style="color:var(--amaranto);font-weight:600;text-decoration:underline">Scopri i corsi</a></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer id="contatti">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <b class="logo">ASD Bersaglieri SGV</b>
+        <p>Associazione Sportiva Dilettantistica<br>senza fini di lucro.</p>
+        <p>Sede legale: Largo Vetrai 1, 52027 San Giovanni Valdarno (AR)</p>
+        <p>Codice Fiscale: 90043230516</p>
+        <p>Affiliata CSI &#8212; codice 05000759 (a.s. 2025/26)</p>
+      </div>
+      <div>
+        <h4>Sezioni</h4>
+        <a href="home.html#discipline">Discipline</a>
+        <a href="corsi.html">Corsi</a>
+        <a href="eventi.html">Eventi</a>
+        <a href="galleria.html">Galleria</a>
+        <a href="iscrizioni.html">Iscrizioni</a>
+      </div>
+      <div>
+        <h4>Contatti</h4>
+        <a href="mailto:anb.asd.sgv@gmail.com">anb.asd.sgv@gmail.com</a>
+        <p class="ph-note">[Canali social da inserire]</p>
+        <p style="font-size:12px;color:rgba(247,244,227,.6);margin-top:10px">Titolare del trattamento dati: ASD Bersaglieri SGV (Reg. UE 2016/679).</p>
+      </div>
+    </div>
+    <div class="copy">&#169; 2026 ASD Bersaglieri SGV &#8212; Tutti i diritti riservati. &#183; <a href="privacy.html" style="color:rgba(247,244,227,.72);text-decoration:underline">Informativa privacy</a></div>
+  </div>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'))}
+  else{document.querySelectorAll('.reveal').forEach(el=>io.observe(el))}
+  document.querySelectorAll('.menu a').forEach(a=>a.addEventListener('click',()=>{const c=document.getElementById('nt');if(c)c.checked=false}));
+</script>
+
+<script>
+// ===== DATI DEL QUIZ =====
+// Ogni domanda: q = testo, a = risposte (la PRIMA e' quella giusta; l'ordine
+// viene mescolato a ogni partita), e = spiegazione mostrata dopo la risposta.
+// "pesca" = quante domande estrarre a caso dal serbatoio per ogni partita.
+var QUIZ = {"tiro": {"nome": "Tiro al bersaglio sportivo","pesca": 12,"domande": [{"q": "Qual è la prima regola nel maneggio di un'arma?","a": ["Considerarla sempre carica, anche quando si è certi che sia scarica","Controllarla una volta all'inizio e poi fidarsi","Considerarla carica solo quando è inserito il caricatore","Considerarla scarica se l'otturatore è aperto"],"e": "È la regola numero uno: un'arma si tratta SEMPRE come se fosse carica. Tutte le altre norme di sicurezza discendono da questa mentalità."},{"q": "Verso dove deve puntare sempre la volata (la bocca della canna)?","a": ["In una direzione sicura, mai verso qualcosa che non si intende colpire","Sempre verso l'alto","Sempre verso il basso","Verso la propria postazione, per controllo"],"e": "Seconda regola di sicurezza: la canna non si punta mai verso persone o cose che non si vogliono colpire. In poligono, sempre verso i bersagli."},{"q": "Dove va tenuto il dito finché non si è pronti a sparare?","a": ["Fuori dal grilletto, disteso lungo il fusto dell'arma","Appoggiato leggermente sul grilletto","Dentro il ponticello, senza premere","Non ha importanza, conta solo la direzione della canna"],"e": "Terza regola: il dito entra sul grilletto solo quando la mira è sul bersaglio e si è deciso di tirare. Così un inciampo o un soprassalto non fanno partire il colpo."},{"q": "Prima di fare fuoco, di cosa bisogna essere certi?","a": ["Del proprio bersaglio e di ciò che si trova davanti e dietro di esso","Solo del bersaglio, il resto non conta","Della distanza esatta in metri","Del tipo di munizione degli altri tiratori"],"e": "Quarta regola: un proiettile può oltrepassare o mancare il bersaglio. Bisogna sapere sempre cosa c'è oltre e attorno a ciò a cui si mira."},{"q": "Le quattro regole di sicurezza valgono…","a": ["sempre, anche con un'arma che si è appena verificata essere scarica","solo con armi cariche","solo per i principianti","solo durante le gare"],"e": "Le regole non hanno eccezioni: si applicano a ogni arma, in ogni momento. È proprio l'automatismo, senza deroghe, a rendere sicuro il maneggio."},{"q": "Come deve entrare l'arma in poligono?","a": ["Scarica e riposta nella sua custodia","Carica ma in sicura","In pugno, pronta all'uso","Con il caricatore inserito ma senza colpo in canna"],"e": "L'arma entra e circola nel poligono sempre scarica e in custodia; si estrae e si maneggia solo alla postazione, ai comandi del direttore di tiro."},{"q": "Chi comanda le operazioni sulla linea di tiro?","a": ["Il direttore di tiro (o l'istruttore): si carica e si spara solo ai suoi comandi","Ogni tiratore per la propria postazione","Il tiratore più esperto presente","Nessuno, basta rispettare i turni"],"e": "In poligono comanda il direttore di tiro. È lui a dare il via al fuoco e a farlo cessare: nessuno maneggia l'arma fuori dai suoi comandi."},{"q": "Al comando di \"cessate il fuoco\", cosa si fa con l'arma?","a": ["La si posa scarica e in sicurezza sul bancone, senza più toccarla","La si tiene in mano puntata ai bersagli","La si ripone subito in custodia","La si passa al tiratore accanto"],"e": "A fuoco cessato l'arma resta sul bancone, scarica e in sicurezza (otturatore aperto), e non si tocca finché il direttore non lo consente: spesso qualcuno è davanti alla linea per i bersagli."},{"q": "Durante il tiro, in quale direzione resta sempre la volata?","a": ["Rivolta verso i bersagli","Rivolta verso l'alto tra un colpo e l'altro","Verso il pavimento della postazione","Dipende dalla comodità del tiratore"],"e": "Sulla linea di tiro la canna è sempre e comunque orientata verso i bersagli, anche mentre si ricarica o si attende: mai ruotarsi con l'arma verso le altre persone."},{"q": "Cosa si fa con l'arma prima di lasciare la postazione?","a": ["Si scarica, si verifica che sia in sicurezza e si ripone in custodia","Si lascia sul bancone così com'è","La si porta con sé carica ma in sicura","Ci pensa il direttore di tiro dopo"],"e": "Si esce dalla linea solo con arma scarica, verificata e riposta. Attraversare il poligono con un'arma carica è tra gli errori più gravi."},{"q": "Quale protezione è indispensabile per l'udito in poligono?","a": ["Cuffie o tappi auricolari (protezioni acustiche)","Nessuna, il rumore non è dannoso","Un semplice batuffolo di cotone","Solo se si spara per più di un'ora"],"e": "Lo sparo produce un rumore impulsivo molto intenso, dannoso per l'udito. Cuffie o tappi antirumore sono obbligatori sulla linea di tiro."},{"q": "A cosa servono gli occhiali di protezione?","a": ["A proteggere gli occhi da residui, bossoli e schegge","Solo a vedere meglio il bersaglio","A ripararsi dal sole","A nulla, sono facoltativi e inutili"],"e": "Gli occhiali di protezione riparano gli occhi da gas, particelle di polvere da sparo, frammenti e bossoli espulsi. Sono un dispositivo di sicurezza, non un accessorio."},{"q": "Chi indossa le protezioni acustiche in poligono?","a": ["Tutti i presenti sulla linea, non solo chi sta sparando","Solo il tiratore attivo","Solo il direttore di tiro","Solo durante le gare ufficiali"],"e": "Il rumore raggiunge chiunque sia sulla linea di tiro. Anche chi osserva o attende il proprio turno deve indossare le protezioni acustiche."},{"q": "Quali elementi vanno allineati per una corretta linea di mira?","a": ["Tacca di mira (posteriore), mirino (anteriore) e occhio del tiratore","Solo il mirino e il bersaglio","Solo l'occhio e il bersaglio","Il caricatore, il grilletto e il bersaglio"],"e": "La linea di mira nasce dall'allineamento di tacca di mira, mirino e occhio. È su questo allineamento che si costruisce tutta la precisione del tiro."},{"q": "Cos'è l'\"immagine di mira\" corretta con il margine bianco?","a": ["Mirare lasciando un filo di bianco tra il mirino e il nero del bersaglio, non attaccati","Coprire completamente il centro nero con il mirino","Mettere a fuoco solo il bersaglio, sfocando le mire","Chiudere entrambi gli occhi un istante prima di sparare"],"e": "Si mira \"a zona\": tenendo un margine bianco tra mirino e nero del bersaglio si vedono le mire ben staccate e allineate. Coprire il nero col mirino rende l'allineamento incerto."},{"q": "Nel tiro di precisione, su cosa deve stare la messa a fuoco dell'occhio?","a": ["Sul mirino, che deve essere nitido, più che sul bersaglio","Sempre e solo sul bersaglio, ben a fuoco","A metà tra mirino e bersaglio","Non conta, basta guardare in avanti"],"e": "L'occhio non può mettere a fuoco tutto insieme: si privilegia il mirino nitido. Un piccolo errore di allineamento delle mire produce un grande errore sul bersaglio, mentre un bersaglio leggermente sfocato incide molto meno."},{"q": "Un piccolo errore nell'allineamento delle mire che effetto ha sul bersaglio?","a": ["Un errore grande, tanto più quanto è lontano il bersaglio","Un errore trascurabile","Nessun effetto se il bersaglio è a fuoco","Sposta il colpo solo in verticale"],"e": "L'errore angolare delle mire si amplifica con la distanza: pochi decimi di millimetro sulle mire diventano centimetri sul bersaglio. Per questo l'allineamento è la cosa più importante."},{"q": "Come va premuto il grilletto nel tiro di precisione?","a": ["In modo progressivo e continuo, senza strappi","Con uno strappo secco e deciso","A scatti ripetuti finché parte il colpo","Il più velocemente possibile"],"e": "La pressione va data gradualmente, in modo continuo, così che la partenza del colpo quasi \"sorprenda\" il tiratore. Lo strappo è ciò che manda il colpo fuori bersaglio."},{"q": "Con quale parte del dito si preme il grilletto?","a": ["Con il polpastrello dell'indice","Con la prima nocca dell'indice","Con la punta dell'unghia","Con il dito medio"],"e": "Si usa il polpastrello dell'indice, che dà sensibilità e permette una pressione dritta e controllata, senza spingere lateralmente l'arma."},{"q": "Qual è l'errore classico che sposta l'arma al momento dello sparo?","a": ["Lo \"strappo\" al grilletto, cioè una pressione brusca e improvvisa","Respirare troppo lentamente","Tenere gli occhi troppo aperti","Impugnare l'arma con la mano sbagliata"],"e": "Lo strappo (o \"strappata\") al grilletto è l'errore più comune: la scatto brusco fa deviare la volata un attimo prima che il colpo parta. Si corregge con una pressione lenta e continua."},{"q": "In quale fase del respiro si lascia partire il colpo?","a": ["Nella pausa naturale dopo aver espirato parzialmente","A pieni polmoni, trattenendo il fiato","Durante un'inspirazione profonda","Durante un'espirazione rapida e forzata"],"e": "Dopo un'espirazione parziale c'è una pausa naturale in cui il corpo è più fermo: è lì che si spara. È il momento di massima stabilità della mira."},{"q": "Perché non conviene trattenere il fiato troppo a lungo prima di sparare?","a": ["Perché il corpo comincia a tremare e la vista si annebbia, peggiorando la mira","Perché fa male ai polmoni","Perché il colpo diventa più rumoroso","Non è vero, più si trattiene meglio è"],"e": "Trattenere il respiro oltre la breve pausa naturale fa aumentare le oscillazioni e riduce l'ossigenazione: la mira peggiora. Se la pausa si allunga troppo, meglio ricominciare il ciclo."},{"q": "Durante l'esecuzione del tiro, la respirazione…","a": ["si ferma naturalmente nella breve pausa in cui si esegue lo sparo","deve continuare normale e profonda","deve essere accelerata per dare energia","non ha alcun ruolo nel tiro"],"e": "Nei gesti di precisione la respirazione si sospende istintivamente per un istante: si sfrutta proprio quella breve pausa di immobilità per lasciar partire il colpo."},{"q": "Quali sono i tre principi di una buona posizione di tiro?","a": ["Semplicità, equilibrio e ripetitività","Forza, rapidità e potenza","Rigidità, tensione e sforzo","Eleganza, simmetria e altezza"],"e": "Una buona posizione è semplice, in equilibrio e — soprattutto — ripetibile identica a ogni tiro. La costanza dell'assetto è ciò che rende il gesto affidabile."},{"q": "Perché la posizione deve essere sempre uguale a ogni tiro?","a": ["Perché ripetere le stesse condizioni permette di capire e correggere gli errori","Perché lo impone il regolamento estetico","Perché altrimenti l'arma si rovina","Non serve, ogni tiro è a sé"],"e": "Se ogni tiro parte da una posizione diversa, gli errori diventano casuali e non correggibili. Ripetere sempre lo stesso assetto rende il tiro leggibile e migliorabile."},{"q": "Cosa conta di più per migliorare nel tiro sportivo?","a": ["La costanza e la ripetizione del gesto corretto","La forza fisica","Un'attrezzatura costosa","La rapidità di esecuzione"],"e": "Come si legge anche nella pagina del corso: più che la forza, conta la costanza. Il tiro è fatto di gesti ripetuti e attenzione, colpo dopo colpo."},{"q": "Perché l'emozione e il battito accelerato influiscono sul tiro?","a": ["Perché aumentano le oscillazioni del corpo e quindi della mira","Non influiscono, conta solo la vista","Rendono il grilletto più duro","Influiscono solo sui tiratori esperti"],"e": "Tensione e battito si trasmettono a braccia e mira. Per questo il corso lavora su calma, respirazione e gestione dell'emozione: il tiro è una disciplina mentale prima che fisica."},{"q": "\"Chiamare\" (o annunciare) il colpo, nel tiro, vuol dire…","a": ["dire a sé stessi dov'era puntata la mira nell'istante dello sparo, prima di guardare il bersaglio","annunciare ad alta voce il punteggio che si spera di fare","avvisare il direttore di tiro che si sta per sparare","contare i colpi rimasti nel caricatore"],"e": "Nell'attimo in cui parte il colpo il tiratore \"legge\" dov'era la mira (centrata, o in fuga da un lato); poi confronta questa chiamata con il foro reale. Se coincidono, ha controllato bene il tiro; se no, capisce cosa è andato storto. È così che si impara, colpo dopo colpo."},{"q": "Chi rilascia il certificato di idoneità al maneggio delle armi?","a": ["Le sezioni del Tiro a Segno Nazionale (TSN)","Il Comune di residenza","Qualsiasi armeria","La scuola guida"],"e": "Il certificato di idoneità al maneggio delle armi si consegue presso le sezioni del Tiro a Segno Nazionale, dopo un'apposita lezione teorico-pratica con prova di tiro."},{"q": "Cosa significa la sigla UITS nel mondo del tiro a segno?","a": ["Unione Italiana Tiro a Segno, l'ente che coordina le sezioni TSN","Unione Internazionale Tiratori Sportivi","Ufficio Italiano Tesseramento Sportivo","Unità Italiana Tiro Speciale"],"e": "L'UITS (Unione Italiana Tiro a Segno) è l'ente che governa e coordina in Italia le sezioni del Tiro a Segno Nazionale e l'attività del tiro a segno."}]}};
+</script>
+
+<script>
+// ===== MOTORE DEL QUIZ =====
+var stato={cat:null,ordine:[],i:0,punti:0};
+function mescola(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function avviaQuiz(cat){
+  var c=QUIZ[cat]; if(!c)return;
+  var n=c.pesca?Math.min(c.pesca,c.domande.length):c.domande.length;
+  stato.cat=cat; stato.punti=0; stato.i=0;
+  stato.ordine=mescola(c.domande).slice(0,n);
+  document.getElementById('catview').style.display='none';
+  document.getElementById('resultview').style.display='none';
+  document.getElementById('quizview').style.display='block';
+  document.getElementById('q-cat').textContent=c.nome;
+  document.getElementById('r-tot').textContent=' / '+stato.ordine.length;
+  mostraDomanda();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function mostraDomanda(){
+  var d=stato.ordine[stato.i], tot=stato.ordine.length;
+  document.getElementById('q-count').textContent=(stato.i+1)+' / '+tot;
+  document.getElementById('q-bar').style.width=((stato.i)/tot*100)+'%';
+  document.getElementById('q-text').textContent=d.q;
+  var fb=document.getElementById('q-fb'); fb.className='fb'; fb.innerHTML='';
+  document.getElementById('q-next').classList.remove('show');
+  var ul=document.getElementById('q-answers'); ul.innerHTML='';
+  var risposte=d.a.map(function(txt,idx){return {txt:txt,giusta:idx===0};});
+  mescola(risposte).forEach(function(r){
+    var li=document.createElement('li');
+    var b=document.createElement('button');
+    b.type='button'; b.textContent=r.txt;
+    b.addEventListener('click',function(){rispondi(b,r.giusta,d);});
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+function rispondi(btn,giusta,d){
+  var bottoni=document.querySelectorAll('#q-answers button');
+  bottoni.forEach(function(b){b.disabled=true; if(b.textContent===d.a[0])b.classList.add('ok');});
+  var fb=document.getElementById('q-fb');
+  if(giusta){stato.punti++; fb.className='fb ok'; fb.innerHTML='<b>Esatto!</b>'+esc(d.e);}
+  else{btn.classList.add('ko'); fb.className='fb ko'; fb.innerHTML='<b>Non proprio&#8230;</b>'+esc(d.e);}
+  var nx=document.getElementById('q-next');
+  nx.textContent=(stato.i+1<stato.ordine.length)?'Avanti':'Vedi il risultato';
+  nx.classList.add('show');
+  document.getElementById('q-bar').style.width=((stato.i+1)/stato.ordine.length*100)+'%';
+}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function prossimaDomanda(){
+  stato.i++;
+  if(stato.i<stato.ordine.length){mostraDomanda();window.scrollTo({top:0,behavior:'smooth'});}
+  else{mostraRisultato();}
+}
+function mostraRisultato(){
+  document.getElementById('quizview').style.display='none';
+  document.getElementById('resultview').style.display='block';
+  var p=stato.punti, tot=stato.ordine.length, r=p/tot;
+  document.getElementById('r-score').textContent=p;
+  document.getElementById('r-tot').textContent=' / '+tot;
+  var msg,txt;
+  if(r===1){msg='Perfetto: vero bersagliere!';txt='Punteggio pieno. La precisione non ti manca: ai nostri corsi ti aspettiamo per metterla alla prova sul campo.';}
+  else if(r>=.8){msg='Ottimo tiro!';txt='Quasi perfetto: hai le basi giuste. Con un corso dal vivo diventi imbattibile.';}
+  else if(r>=.6){msg='Buona mira';txt='Più sì che no: qualche colpo a vuoto, ma la direzione è quella giusta. Riprova o vieni a imparare con noi.';}
+  else if(r>=.4){msg='C’è del potenziale';txt='Qualcosa sai, ma il bello deve ancora venire: queste cose si imparano davvero solo facendole.';}
+  else{msg='Ricomincia la carica!';txt='Partenza in salita, ma ogni bersagliere ha cominciato da zero. Rigioca: le domande cambiano e le spiegazioni ti aiuteranno a ricordare.';}
+  document.getElementById('r-msg').textContent=msg;
+  document.getElementById('r-text').textContent=txt;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function rigioca(){avviaQuiz(stato.cat);}
+function tornaAlleCategorie(){
+  document.getElementById('quizview').style.display='none';
+  document.getElementById('resultview').style.display='none';
+  document.getElementById('catview').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+</body></html>
